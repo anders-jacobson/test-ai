@@ -1,0 +1,301 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Coding Standards (Next.js 15 + App Router)
+
+## File Naming Conventions
+- **Pages**: `page.tsx` (App Router pages)
+- **Layouts**: `layout.tsx` (App Router layouts)
+- **Components**: PascalCase (`KeyDashboard.tsx`)
+- **Server Actions**: camelCase (`createKeyType.ts`)
+- **Hooks**: camelCase with 'use' prefix (`useKeyTypes.ts`)
+- **Utils**: camelCase (`formatDate.ts`)
+- **Types**: PascalCase (`KeyType.ts`)
+
+## Server Component Structure (Default)
+```typescript
+import { prisma } from '@/lib/prisma'
+
+interface PageProps {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function ServerComponentPage({ params, searchParams }: PageProps) {
+  // Server-side data fetching
+  const keyTypes = await prisma.keyType.findMany({
+    where: { cooperativeId: params.id },
+    include: { keyCopies: true }
+  });
+  
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Key Management</h1>
+      <KeyDashboard keyTypes={keyTypes} />
+    </div>
+  );
+}
+```
+
+## Client Component Structure
+```typescript
+'use client'
+
+import { useState, useEffect } from 'react'
+import { KeyType } from '@prisma/client'
+
+interface ComponentProps {
+  /** JSDoc comment for each prop */
+  keyTypes: KeyType[]
+  onUpdate?: (key: KeyType) => void
+}
+
+export default function ClientComponent({ keyTypes, onUpdate }: ComponentProps) {
+  // 1. State hooks first
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  
+  // 2. Event handlers
+  const handleSubmit = async (formData: FormData) => {
+    setLoading(true)
+    try {
+      const result = await createKeyType(formData)
+      if (!result.success) throw new Error(result.error)
+      onUpdate?.(result.data)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Unknown error')
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  // 3. Effects
+  useEffect(() => {
+    // Client-side effects only
+  }, [])
+  
+  // 4. Render
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+  
+  return (
+    <div className="space-y-4">
+      <form action={handleSubmit}>
+        {/* Form content */}
+      </form>
+    </div>
+  )
+}
+```
+
+## Server Actions Pattern
+```typescript
+'use server'
+
+import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+
+export async function createKeyType(formData: FormData) {
+  try {
+    // Input validation
+    const name = formData.get('name') as string
+    const totalCopies = parseInt(formData.get('totalCopies') as string) || 0
+    
+    if (!name || name.length < 2) {
+      return { success: false, error: 'Name must be at least 2 characters' }
+    }
+    
+    // Create key type and copies in transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Create key type
+      const keyType = await tx.keyType.create({
+        data: {
+          name,
+          accessArea: formData.get('accessArea') as string,
+          totalCopies,
+          cooperativeId: formData.get('cooperativeId') as string,
+        }
+      })
+      
+      // Bulk create key copies
+      if (totalCopies > 0) {
+        const copies = Array.from({ length: totalCopies }, (_, i) => ({
+          keyTypeId: keyType.id,
+          copyNumber: i + 1,
+          status: 'AVAILABLE' as const,
+        }))
+        
+        await tx.keyCopy.createMany({
+          data: copies
+        })
+      }
+      
+      return keyType
+    })
+    
+    // Revalidate and redirect
+    revalidatePath('/dashboard')
+    return { success: true, data: result }
+  } catch (error) {
+    console.error('Failed to create key type:', error)
+    return { success: false, error: 'Failed to create key type' }
+  }
+}
+```
+
+## API Route Pattern (App Router)
+```typescript
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const cooperativeId = searchParams.get('cooperativeId')
+    
+    const keyTypes = await prisma.keyType.findMany({
+      where: cooperativeId ? { cooperativeId } : {},
+      include: { keyCopies: true }
+    })
+    
+    return NextResponse.json(keyTypes)
+  } catch (error) {
+    console.error('API Error:', error)
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    
+    const keyType = await prisma.keyType.create({
+      data: body
+    })
+    
+    return NextResponse.json(keyType, { status: 201 })
+  } catch (error) {
+    console.error('API Error:', error)
+    return NextResponse.json(
+      { error: 'Failed to create key type' },
+      { status: 400 }
+    )
+  }
+}
+```
+
+## Error Handling Patterns
+```typescript
+// Server Component Error Handling
+import { notFound } from 'next/navigation'
+
+export default async function KeyPage({ params }: { params: { id: string } }) {
+  try {
+    const keyType = await prisma.keyType.findUnique({
+      where: { id: params.id }
+    })
+    
+    if (!keyType) {
+      notFound()
+    }
+    
+    return <KeyDetails keyType={keyType} />
+  } catch (error) {
+    console.error('Error fetching key type:', error)
+    throw error // This will be caught by error.tsx
+  }
+}
+
+// Client Component Error Handling
+'use client'
+
+export default function ErrorComponent({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <h2 className="text-xl font-semibold mb-4">Something went wrong!</h2>
+      <button
+        onClick={() => reset()}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Try again
+      </button>
+    </div>
+  )
+}
+```
+
+## Tailwind CSS Guidelines (Next.js Integration)
+- Mobile-first approach: `class="text-sm md:text-base lg:text-lg"`
+- Use Next.js Tailwind config with custom styles in `globals.css`
+- Responsive design: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- shadcn/ui components for consistent design system
+
+## Accessibility Guidelines
+- **Font Sizes**: Base 16px minimum, larger for seniors: `text-base lg:text-lg`
+- **Touch Targets**: Minimum 44px: `min-h-[44px] min-w-[44px]`
+- **Contrast**: Use high contrast colors: `text-gray-900 bg-white`
+- **Focus States**: Clear focus indicators: `focus:ring-2 focus:ring-blue-500`
+- **Labels**: Always include proper labels and ARIA attributes
+- **Error States**: Clear error messaging with recovery actions
+
+## TypeScript Rules
+- Strict mode enabled in `tsconfig.json`
+- Use Prisma generated types: `import { KeyType } from '@prisma/client'`
+- Proper interface definitions for component props
+- No `any` types - use proper type constraints
+- Use `typeof` for server action types
+
+## Form Handling with Server Actions
+```typescript
+'use client'
+
+import { useFormState } from 'react-dom'
+import { createKeyType } from '@/app/actions/keyTypes'
+
+const initialState = { success: false, error: '' }
+
+export default function KeyTypeForm() {
+  const [state, formAction] = useFormState(createKeyType, initialState)
+  
+  return (
+    <form action={formAction} className="space-y-4">
+      <input
+        name="name"
+        type="text"
+        placeholder="Key type name"
+        className="w-full px-3 py-2 border rounded"
+        required
+      />
+      {state.error && (
+        <p className="text-red-500 text-sm">{state.error}</p>
+      )}
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+      >
+        Create Key Type
+      </button>
+    </form>
+  )
+}
+```
+
+## Next.js 15 Best Practices
+- **Server Components by default** - Only add 'use client' when needed
+- **Streaming with Suspense** for better UX
+- **Server Actions** for mutations instead of API routes
+- **Parallel Routes** for complex layouts
+- **Route Groups** for organization: `(dashboard)/keys/page.tsx`
+- **Middleware** for authentication: `middleware.ts`

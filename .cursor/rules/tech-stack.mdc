@@ -1,0 +1,81 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Technology Stack
+
+## Frontend Stack
+- **Next.js 15** with TypeScript (strict mode) and App Router
+- **React 18** (included with Next.js)
+- **Tailwind CSS** with Next.js integration
+- **shadcn/ui** for components
+- **Recharts** for stacked bar charts
+- **Lucide React** for icons
+
+## Backend & Database
+- **Supabase** (PostgreSQL + Auth + Real-time)
+- **Prisma** as ORM for type-safe database operations
+- **Row Level Security (RLS)** for data isolation
+- **EU servers** for GDPR compliance
+
+## Key Dependencies
+```json
+{
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "@supabase/supabase-js": "^2.0.0",
+    "prisma": "^5.0.0",
+    "@prisma/client": "^5.0.0",
+    "recharts": "^2.0.0",
+    "lucide-react": "^0.263.1",
+    "tailwindcss": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+## Architecture Patterns
+- Next.js App Router with server components
+- Client components for interactive features
+- Custom hooks for Supabase + Prisma operations
+- Server actions for data mutations
+- Middleware for authentication
+- Mobile-first responsive design
+- TypeScript for all files
+
+## File Structure (Next.js 15 App Router)
+```
+├── app/                    # App Router directory
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   ├── dashboard/         # Dashboard routes
+│   ├── keys/             # Key management routes
+│   └── api/              # API routes
+├── components/           # Reusable UI components
+├── lib/                 # Utility functions
+│   ├── prisma.ts        # Prisma client
+│   ├── supabase.ts      # Supabase client
+│   └── utils.ts         # Helper functions
+├── hooks/               # Custom hooks
+├── types/               # TypeScript definitions
+├── prisma/              # Prisma schema and migrations
+│   └── schema.prisma    # Database schema
+└── middleware.ts        # Next.js middleware for auth
+```
+
+## Next.js 15 Specific Features
+- **Server Components** by default for better performance
+- **Streaming** for improved loading states
+- **Server Actions** for form submissions and mutations
+- **Middleware** for authentication and redirects
+- **Route Groups** for organizing related routes
+- **Parallel Routes** for complex layouts
