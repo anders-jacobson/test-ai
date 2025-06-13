@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String   @unique
+  name          String?
+  cooperative   String   // Required: Each user belongs to exactly one cooperative
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  keyTypes      KeyType[]
+  borrowers     Borrower[]
+  lendingRecords LendingRecord[]
+  
+  @@map("profiles")
+}
+
+model KeyType {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String   @db.VarChar(100)
+  accessArea    String?  @map("access_area")
+  totalCopies   Int      @default(0) @map("total_copies")
+  cooperativeId String   @map("cooperative_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  profile       Profile    @relation(fields: [cooperativeId], references: [id])
+  keyCopies     KeyCopy[]
+  
+  @@map("key_types")
+}
+
+model KeyCopy {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  keyTypeId  String    @map("key_type_id") @db.Uuid
+  copyNumber Int       @map("copy_number")
+  status     KeyStatus @default(AVAILABLE)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  keyType        KeyType         @relation(fields: [keyTypeId], references: [id], onDelete: Cascade)
+  lendingRecords LendingRecord[]
+  
+  @@unique([keyTypeId, copyNumber])
+  @@map("key_copies")
+}
+
+model Borrower {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String   @db.VarChar(100)
+  email         String?  @db.VarChar(255)
+  phone         String?  @db.VarChar(20)
+  company       String?  @db.VarChar(100)
+  cooperativeId String   @map("cooperative_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  profile        Profile         @relation(fields: [cooperativeId], references: [id])
+  lendingRecords LendingRecord[]
+  
+  @@map("borrowers")
+}
+
+model LendingRecord {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  keyCopyId     String    @map("key_copy_id") @db.Uuid
+  borrowerId    String    @map("borrower_id") @db.Uuid
+  lentDate      DateTime  @default(now()) @map("lent_date") @db.Date
+  endDate       DateTime? @map("end_date") @db.Date
+  notes         String?
+  idChecked     Boolean   @default(false) @map("id_checked")
+  returnedDate  DateTime? @map("returned_date") @db.Date
+  cooperativeId String    @map("cooperative_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  keyCopy    KeyCopy  @relation(fields: [keyCopyId], references: [id], onDelete: Cascade)
+  borrower   Borrower @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
+  profile    Profile  @relation(fields: [cooperativeId], references: [id])
+  
+  @@map("lending_records")
+}
+
+enum KeyStatus {
+  AVAILABLE
+  OUT
+  LOST
+  
+  @@map("key_status")
+}

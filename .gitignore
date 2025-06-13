@@ -80,3 +80,8 @@ ENV/
 # Backup files
 *.bak
 *.backup 
+/lib/generated/prisma
+
+/lib/generated/prisma
+
+/generated/prisma

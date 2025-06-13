@@ -68,24 +68,26 @@ Implementation roadmap for the Swedish housing cooperative key management applic
 
 > **Note:** The test endpoint currently requires a user table (e.g., `profiles`) to return data. Update the test once tables are created.
 
-- [ ] **Configure Supabase MCP Server for AI assistance**
+- [x] **Configure Supabase MCP Server for AI assistance**
 
-  - [ ] Create `.cursor/mcp.json` file in project root
-  - [ ] Add Supabase MCP server configuration with PAT
-  - [ ] Test MCP connection by asking AI to fetch project config
-  - [ ] Verify AI can list tables and run queries
-  - [ ] Test schema generation and TypeScript type creation
-  - [ ] Document MCP capabilities for team reference
+  - [x] Create `.cursor/mcp.json` file in project root
+  - [x] Add Supabase MCP server configuration with PAT
+  - [x] Test MCP connection by asking AI to fetch project config
+  - [x] Verify AI can list tables and run queries
+  - [x] Test schema generation and TypeScript type creation
+  - [x] Document MCP capabilities for team reference
 
-- [ ] **Configure Prisma with Supabase PostgreSQL**
+> **Note:** MCP server connection is verified and the organization rule is enforced in `.cursor/rules/project-context.mdc`.
 
-  - [ ] Install Prisma CLI and client packages
-  - [ ] Initialize Prisma: `npx prisma init`
-  - [ ] Configure `schema.prisma` with Supabase connection
-  - [ ] Import complete database schema from cursor rules
-  - [ ] Generate Prisma client: `npx prisma generate`
-  - [ ] Create `lib/prisma.ts` client singleton
-  - [ ] Run initial migration: `npx prisma db push`
+- [x] **Configure Prisma with Supabase PostgreSQL**
+
+  - [x] Install Prisma CLI and client packages
+  - [x] Initialize Prisma: `npx prisma init`
+  - [x] Configure `schema.prisma` with Supabase connection
+  - [x] Import complete database schema from cursor rules
+  - [x] Generate Prisma client: `npx prisma generate`
+  - [x] Create `lib/prisma.ts` client singleton
+  - [x] Run initial migration: `npx prisma db push`
   - [ ] Test: Verify database schema is created correctly
   - [ ] Test: Basic CRUD operations work
 
