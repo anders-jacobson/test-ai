@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # Key Management App Context
 
 This is a Swedish housing cooperative key management app for nyckelansvariga (key managers) in bostadsrättsföreningar.
@@ -49,3 +44,8 @@ This is a Swedish housing cooperative key management app for nyckelansvariga (ke
 - **Status**: Active and healthy
 
 Reference: @PRD.md for complete requirements
+
+## Supabase Organization
+
+- All Supabase-related development, automation, and database operations must use the organization **test-ai-build** (ID: pxskhfvbsxtaaulctibz).
+- Do not use other organizations unless explicitly instructed.

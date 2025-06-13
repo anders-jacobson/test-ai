@@ -35,30 +35,38 @@ Implementation roadmap for the Swedish housing cooperative key management applic
 
 ### In Progress Tasks
 
-- [ ] **Initialize Next.js 15 project with TypeScript**
+- [x] **Initialize Next.js 15 project with TypeScript**
 
-  - [ ] Run `npx create-next-app@latest key-management --typescript --tailwind --eslint --app`
-  - [ ] Configure `tsconfig.json` with strict mode and path aliases
-  - [ ] Set up `next.config.js` with required configurations
-  - [ ] Create folder structure: `app/`, `components/`, `lib/`, `hooks/`
-  - [ ] Install additional dependencies: Prisma, Supabase client, shadcn/ui
-  - [ ] Configure ESLint + Prettier with project rules
-  - [ ] Create basic `app/layout.tsx` with metadata and fonts
-  - [ ] Create placeholder `app/page.tsx` (landing page)
-  - [ ] Test: Verify dev server runs without errors (`npm run dev`)
-  - [ ] Test: Verify TypeScript compilation works (`npm run build`)
+  - [x] Run `npx create-next-app@latest src --typescript --tailwind --eslint --app`
+  - [x] Migrate app from `src/` to root for single-app structure
+  - [x] Move `app/`, `components/`, `lib/`, `hooks/`, and `public/` to root
+  - [x] Move and merge `package.json`, `package-lock.json`, and all config files to root
+  - [x] Clean up redundant files and remove `src/`
+  - [x] Configure `tsconfig.json` with strict mode and path aliases
+  - [x] Set up `next.config.js` with required configurations
+  - [x] Create folder structure: `app/`, `components/`, `lib/`, `hooks/` (now at root)
+  - [x] Install additional dependencies: Prisma, Supabase client, shadcn/ui
+  - [x] Configure ESLint + Prettier with project rules
+  - [x] Create basic `app/layout.tsx` with metadata and fonts
+  - [x] Create placeholder `app/page.tsx` (landing page)
+  - [x] Test: Verify dev server runs without errors (`npm run dev`)
+  - [x] Test: Verify TypeScript compilation works (`npm run build`)
 
-- [ ] **Set up Supabase project with EU region**
+> **Note:** The project is now a standard single-app Next.js 15 repo with all configs and folders at the root. All future development should follow this structure.
 
-  - [ ] Create new Supabase project in EU region (Frankfurt/Ireland)
-  - [ ] Configure database settings and enable RLS
-  - [ ] Generate and save API keys securely
-  - [ ] Create personal access token (PAT) for MCP server
-  - [ ] Set up `.env.local` with Supabase credentials
-  - [ ] Create `lib/supabase.ts` client configuration
-  - [ ] Test database connection
+- [x] **Set up Supabase project with EU region**
+
+  - [x] Create new Supabase project in EU region (Frankfurt/Ireland)
+  - [x] Configure database settings and enable RLS
+  - [x] Generate and save API keys securely
+  - [x] Create personal access token (PAT) for MCP server
+  - [x] Set up `.env.local` with Supabase credentials (URL and anon key)
+  - [x] Create `lib/supabase.ts` client configuration
+  - [x] Test database connection with API route (`/api/supabase-test`)
   - [ ] Enable Google OAuth in Supabase Auth settings
   - [ ] Configure authentication redirects for local development
+
+> **Note:** The test endpoint currently requires a user table (e.g., `profiles`) to return data. Update the test once tables are created.
 
 - [ ] **Configure Supabase MCP Server for AI assistance**
 
