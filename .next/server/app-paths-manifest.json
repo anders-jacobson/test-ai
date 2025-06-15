@@ -1,3 +1,8 @@
 {
-  "/api/prisma-test/route": "app/api/prisma-test/route.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/logout/page": "app/auth/logout/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
 }

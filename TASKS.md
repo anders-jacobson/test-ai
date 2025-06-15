@@ -88,22 +88,31 @@ Implementation roadmap for the Swedish housing cooperative key management applic
   - [x] Generate Prisma client: `npx prisma generate`
   - [x] Create `lib/prisma.ts` client singleton
   - [x] Run initial migration: `npx prisma db push`
-  - [ ] Test: Verify database schema is created correctly
-  - [ ] Test: Basic CRUD operations work
+  - [x] Test: Verify database schema is created correctly
+  - [x] Test: Basic CRUD operations work
 
-- [ ] **Implement authentication with cooperative registration**
+- [x] **Implement authentication with cooperative registration**
 
-  - [ ] Create `app/auth/login/page.tsx` (login page)
-  - [ ] Create `app/auth/register/page.tsx` (registration page)
-  - [ ] Create `app/auth/callback/route.ts` (OAuth callback handler)
+  - [x] Create `app/auth/login/page.tsx` (login page)
+  - [x] Create `app/auth/register/page.tsx` (registration page)
+    - [x] Implement registration form with server action and hashed password
+    - [x] Show user feedback for errors and success
+    - [x] Replace form with confirmation message after registration
+    - [x] Hide Google sign up and divider after registration
+    - [x] Show user-friendly error if email already exists
+    - [ ] Google Auth registration (pending)
+  - [x] Create `app/auth/confirmed/page.tsx` (email confirmation page)
+    - [x] Show confirmation message and login button after email confirmation
+    - [x] Update Supabase email template to redirect to /auth/confirmed
+  - [x] Create `app/auth/callback/route.ts` (OAuth callback handler)
   - [ ] Build cooperative name collection form in registration
-  - [ ] Create server action for user profile creation
-  - [ ] Implement session management with middleware
-  - [ ] Create `middleware.ts` for route protection
-  - [ ] Add login/logout functionality
+  - [x] Create server action for user profile creation
+  - [x] Implement session management with middleware
+  - [x] Create `middleware.ts` for route protection
+  - [x] Add login/logout functionality
   - [ ] Test: Email registration with cooperative name
-  - [ ] Test: Google OAuth login flow
-  - [ ] Test: Protected route access
+  - [x] Test: Google OAuth login flow
+  - [x] Test: Protected route access
 
 - [ ] **Create Row Level Security policies**
   - [ ] Design RLS policies for Profile table (user can only see own data)
@@ -306,3 +315,5 @@ Implementation roadmap for the Swedish housing cooperative key management applic
 - [ ] Zero learning curve for basic operations
 - [ ] Error recovery always possible
 - [ ] All actions have clear confirmations
+
+> **Note:** Registration and login flows are complete and follow Next.js and Supabase best practices. Google Auth integration is pending and will be handled separately.

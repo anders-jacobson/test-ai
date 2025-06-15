@@ -299,3 +299,11 @@ export default function KeyTypeForm() {
 - **Parallel Routes** for complex layouts
 - **Route Groups** for organization: `(dashboard)/keys/page.tsx`
 - **Middleware** for authentication: `middleware.ts`
+
+## Next.js Built-in Components Usage
+- Always use Next.js built-in components for their intended purposes:
+  - Use `next/image` (`<Image />`) for all images to benefit from automatic optimization, lazy loading, and responsive sizing.
+  - Use `next/link` (`<Link />`) for all internal navigation to enable client-side routing and prefetching.
+  - Use `next/navigation` (`<NavLink />` or `useRouter`) for advanced navigation patterns.
+- Do **not** use native `<img>` or `<a>` tags for internal navigation or images unless there is a specific reason (e.g., external links, non-optimized images).
+- Update all pages and components to follow this rule when relevant.

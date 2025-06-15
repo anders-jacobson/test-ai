@@ -1,8 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 148, "column": 0}, "map": {"version":3,"sources":["file:///Users/andogpp/Documents/dev/Chas/11-examensarbete/test-ai/lib/supabase.ts"],"sourcesContent":["import { createClient } from '@supabase/supabase-js';\n\nconst supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;\nconst supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;\n\nexport const supabase = createClient(supabaseUrl, supabaseAnonKey);\n"],"names":[],"mappings":";;;AAAA;;AAEA,MAAM;AACN,MAAM;AAEC,MAAM,WAAW,CAAA,GAAA,yLAAA,CAAA,eAAY,AAAD,EAAE,aAAa","debugId":null}},
-    {"offset": {"line": 162, "column": 0}, "map": {"version":3,"sources":["file:///Users/andogpp/Documents/dev/Chas/11-examensarbete/test-ai/app/api/supabase-test/route.ts"],"sourcesContent":["import { NextResponse } from 'next/server';\nimport { supabase } from '@/lib/supabase';\n\nexport async function GET() {\n  const { data, error } = await supabase.from('pg_catalog.pg_tables').select('tablename').limit(1);\n\n  if (error) {\n    return NextResponse.json({ success: false, error: error.message }, { status: 500 });\n  }\n\n  return NextResponse.json({ success: true, data });\n}\n"],"names":[],"mappings":";;;AAAA;AACA;;;AAEO,eAAe;IACpB,MAAM,EAAE,IAAI,EAAE,KAAK,EAAE,GAAG,MAAM,iHAAA,CAAA,WAAQ,CAAC,IAAI,CAAC,wBAAwB,MAAM,CAAC,aAAa,KAAK,CAAC;IAE9F,IAAI,OAAO;QACT,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;YAAE,SAAS;YAAO,OAAO,MAAM,OAAO;QAAC,GAAG;YAAE,QAAQ;QAAI;IACnF;IAEA,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;QAAE,SAAS;QAAM;IAAK;AACjD","debugId":null}}]
-}
