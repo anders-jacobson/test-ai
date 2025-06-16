@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button } from './Button';
+import { Button } from './ui/button';
 
 export default function Navbar() {
   return (
@@ -10,7 +10,7 @@ export default function Navbar() {
         {/* Navigation actions */}
         <div className="flex gap-2">
           <Link href="/auth/register">
-            <Button variant="primary">Register</Button>
+            <Button variant="default">Register</Button>
           </Link>
           <Link href="/auth/login">
             <Button variant="secondary">Login</Button>
