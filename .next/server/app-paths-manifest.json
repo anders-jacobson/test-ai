@@ -2,7 +2,5 @@
   "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
   "/(root)/page": "app/(root)/page.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/auth/register/page": "app/auth/register/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/auth/login/page": "app/auth/login/page.js"
 }

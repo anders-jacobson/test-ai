@@ -1,8 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useEffect, useState } from 'react'; // Import useEffect and useState
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -39,31 +37,12 @@ import { ListFilter, PlusCircle } from 'lucide-react';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
+  data: TData[];
 }
 
-export function DataTable<TData>({ columns }: DataTableProps<TData>) {
+export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-
-  const [data, setData] = useState([]); // Add useState for data
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('./data.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        setData(data);
-        console.log('Data fetched', data);
-      } catch (err) {
-        console.error('Error fetching data', err);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const table = useReactTable({
     data,
@@ -104,9 +83,6 @@ export function DataTable<TData>({ columns }: DataTableProps<TData>) {
         <Input
           placeholder="Filter by name..."
           value={(table.getColumn('borrowerName')?.getFilterValue() as string) ?? ''}
-          // onChange={(event) =>
-          //   table.getColumn("borrowerName")?.setFilterValue(event.target.value)
-          // }
           onChange={(event) => handleNameFilter(event.target.value)}
           className="max-w-xs"
         />
@@ -194,7 +170,7 @@ export function DataTable<TData>({ columns }: DataTableProps<TData>) {
       </div>
       <div className="flex items-center justify-between space-x-2 py-4 w-full">
         <span>
-          Page {table.getState().pagination.pageIndex + 1} of{''} {table.getPageCount()}
+          Page {table.getState().pagination.pageIndex + 1} or {table.getPageCount()}
         </span>
         <div className="flex items-center space-x-2 py-4">
           <Button

@@ -154,9 +154,13 @@ Implementation roadmap for the Swedish housing cooperative key management applic
 
   - [x] Add stacked bar chart at the top of the dashboard main area (use shadcn/ui Bar Chart - Stacked + Legend, [reference](https://ui.shadcn.com/charts/bar#charts))
   - [x] Configure chart to show one bar per key type, stacked by status (Lost, Available, In Use)
-  - [ ] Connect chart data to key/copy data model
   - [x] Add data table below the chart (list all key copies with columns for type, status, borrower, etc.)
+  - [x] Create server action to fetch borrowed keys/borrower data for table
+  - [x] Update dashboard page to fetch and pass table data server-side
+  - [x] Refactor DataTable to accept columns and data as props (remove client fetch)
+  - [x] Test: Table displays correct borrower/key data from database
   - [ ] Ensure chart and table are accessible and responsive
+  - [ ] (Replaced) Remove old data.json usage for table data
 
 - [ ] **Tailwind and CSS foundation**
 

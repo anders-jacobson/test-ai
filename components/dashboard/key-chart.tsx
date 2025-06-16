@@ -12,26 +12,6 @@ import {
 } from 'recharts';
 
 // Mock data: one bar per key type, stacked by status
-const data = [
-  {
-    keyType: 'Laundry',
-    Available: 20,
-    InUse: 8,
-    Lost: 2,
-  },
-  {
-    keyType: 'Trash',
-    Available: 25,
-    InUse: 4,
-    Lost: 1,
-  },
-  {
-    keyType: 'Master',
-    Available: 1,
-    InUse: 1,
-    Lost: 1,
-  },
-];
 
 const statusBars = [
   { key: 'Available', color: 'var(--chart-1)', name: 'Available' },
@@ -39,7 +19,11 @@ const statusBars = [
   { key: 'Lost', color: 'var(--chart-3)', name: 'Lost' },
 ];
 
-export default function KeyChart() {
+export default function KeyChart({
+  data,
+}: {
+  data: { keyType: string; Available: number; InUse: number; Lost: number }[];
+}) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>

@@ -1,7 +1,9 @@
 'use client';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
+
+const supabase = createPagesBrowserClient();
 
 function handleGoogleSignIn() {
   supabase.auth.signInWithOAuth({
