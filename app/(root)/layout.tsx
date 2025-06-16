@@ -1,10 +1,10 @@
 import React from 'react';
-import Navbar from '../../components/Navbar';
+import NavbarRoot from '../../components/NavbarRoot';
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Navbar />
+      <NavbarRoot />
       <div className="max-w-[1140px] mx-auto">{children}</div>
     </>
   );

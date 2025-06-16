@@ -73,7 +73,7 @@ function Button({ className, variant, size, asChild = false, ...props }) {
 }
 ;
 }}),
-"[project]/components/Navbar.tsx [app-rsc] (ecmascript)": ((__turbopack_context__) => {
+"[project]/components/NavbarRoot.tsx [app-rsc] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
 var { g: global, __dirname } = __turbopack_context__;
@@ -97,7 +97,7 @@ function NavbarRoot() {
                     className: "font-bold text-lg tracking-tight text-primary",
                     children: "LOGO"
                 }, void 0, false, {
-                    fileName: "[project]/components/Navbar.tsx",
+                    fileName: "[project]/components/NavbarRoot.tsx",
                     lineNumber: 9,
                     columnNumber: 9
                 }, this),
@@ -110,12 +110,12 @@ function NavbarRoot() {
                                 variant: "default",
                                 children: "Register"
                             }, void 0, false, {
-                                fileName: "[project]/components/Navbar.tsx",
+                                fileName: "[project]/components/NavbarRoot.tsx",
                                 lineNumber: 13,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
-                            fileName: "[project]/components/Navbar.tsx",
+                            fileName: "[project]/components/NavbarRoot.tsx",
                             lineNumber: 12,
                             columnNumber: 11
                         }, this),
@@ -125,29 +125,29 @@ function NavbarRoot() {
                                 variant: "secondary",
                                 children: "Login"
                             }, void 0, false, {
-                                fileName: "[project]/components/Navbar.tsx",
+                                fileName: "[project]/components/NavbarRoot.tsx",
                                 lineNumber: 16,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
-                            fileName: "[project]/components/Navbar.tsx",
+                            fileName: "[project]/components/NavbarRoot.tsx",
                             lineNumber: 15,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
-                    fileName: "[project]/components/Navbar.tsx",
+                    fileName: "[project]/components/NavbarRoot.tsx",
                     lineNumber: 11,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
-            fileName: "[project]/components/Navbar.tsx",
+            fileName: "[project]/components/NavbarRoot.tsx",
             lineNumber: 7,
             columnNumber: 7
         }, this)
     }, void 0, false, {
-        fileName: "[project]/components/Navbar.tsx",
+        fileName: "[project]/components/NavbarRoot.tsx",
         lineNumber: 6,
         columnNumber: 5
     }, this);
@@ -162,13 +162,13 @@ __turbopack_context__.s({
     "default": (()=>__TURBOPACK__default__export__)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js [app-rsc] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Navbar$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/Navbar.tsx [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$NavbarRoot$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/NavbarRoot.tsx [app-rsc] (ecmascript)");
 ;
 ;
 function Layout({ children }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Fragment"], {
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Navbar$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$NavbarRoot$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/app/(root)/layout.tsx",
                 lineNumber: 7,
                 columnNumber: 7
@@ -189,4 +189,4 @@ const __TURBOPACK__default__export__ = Layout;
 
 };
 
-//# sourceMappingURL=_762d3b66._.js.map
+//# sourceMappingURL=_b1f5c37a._.js.map

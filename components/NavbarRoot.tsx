@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from './ui/button';
 
-export default function Navbar() {
+export default function NavbarRoot() {
   return (
     <nav className="w-full border-b bg-background">
       <div className="max-w-[1140px] mx-auto flex h-16 items-center justify-between px-4">

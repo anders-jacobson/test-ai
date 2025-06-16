@@ -51,6 +51,7 @@ Implementation roadmap for the Swedish housing cooperative key management applic
   - [x] Create placeholder `app/page.tsx` (landing page)
   - [x] Test: Verify dev server runs without errors (`npm run dev`)
   - [x] Test: Verify TypeScript compilation works (`npm run build`)
+  - [x] Add root navigation bar (`components/NavbarRoot.tsx`) to layout as NavbarRoot (for landing/auth pages only; dashboard will use a separate navigation component)
 
 > **Note:** The project is now a standard single-app Next.js 15 repo with all configs and folders at the root. All future development should follow this structure.
 
@@ -313,39 +314,8 @@ Implementation roadmap for the Swedish housing cooperative key management applic
 - `components/dashboard/` - Dashboard-specific components
 - `components/forms/` - Form components with validation
 - `components/charts/` - Chart components with Recharts
+- `components/NavbarRoot.tsx` - Root navigation bar for landing/auth pages ✅
 
 ### Configuration
 
-- `tailwind.config.js` - Tailwind with accessibility settings ✅
-- `middleware.ts` - Authentication middleware ✅
-- `next.config.js` - Next.js configuration ✅
-- `.env.local` - Environment variables ✅
-
-## Success Criteria
-
-### MVP Completion Checklist
-
-- [ ] User can register with cooperative name
-- [ ] User can create key types with bulk copy generation
-- [ ] User can add and manage borrowers
-- [ ] User can lend keys with full borrower tracking
-- [ ] User can return keys and update status
-- [ ] Dashboard shows real-time key availability
-- [ ] Mobile interface works smoothly on phones
-- [ ] All accessibility requirements met
-
-### Performance Targets
-
-- [ ] Page load times under 2 seconds
-- [ ] Form submissions under 1 second
-- [ ] Mobile touch responses under 100ms
-- [ ] Dashboard data refresh under 500ms
-
-### User Experience Goals
-
-- [ ] Senior-friendly interface tested with target users
-- [ ] Zero learning curve for basic operations
-- [ ] Error recovery always possible
-- [ ] All actions have clear confirmations
-
-> **Note:** Registration and login flows are complete and follow Next.js and Supabase best practices. Google Auth integration is pending and will be handled separately.
+- `tailwind.config.js`
