@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/andogpp/Documents/dev/Chas/11-examensarbete/test-ai/app/auth/logout/page.tsx"],"sourcesContent":["'use client';\nimport { useEffect } from 'react';\nimport { supabase } from '@/lib/supabase';\n\nexport default function LogoutPage() {\n  useEffect(() => {\n    async function signOut() {\n      await supabase.auth.signOut();\n      window.location.href = '/auth/login';\n    }\n    signOut();\n  }, []);\n\n  return (\n    <main className=\"flex flex-col items-center justify-center min-h-screen bg-background p-4\">\n      <div className=\"w-full max-w-md bg-card rounded-lg shadow-lg p-8 text-center\">\n        <span className=\"text-lg\">Loggar ut...</span>\n      </div>\n    </main>\n  );\n}\n"],"names":[],"mappings":";;;;AACA;AACA;;;AAFA;;;AAIe,SAAS;;IACtB,CAAA,GAAA,6JAAA,CAAA,YAAS,AAAD;gCAAE;YACR,eAAe;gBACb,MAAM,kHAAA,CAAA,WAAQ,CAAC,IAAI,CAAC,OAAO;gBAC3B,OAAO,QAAQ,CAAC,IAAI,GAAG;YACzB;YACA;QACF;+BAAG,EAAE;IAEL,qBACE,6LAAC;QAAK,WAAU;kBACd,cAAA,6LAAC;YAAI,WAAU;sBACb,cAAA,6LAAC;gBAAK,WAAU;0BAAU;;;;;;;;;;;;;;;;AAIlC;GAhBwB;KAAA","debugId":null}}]
-}

@@ -1,17 +1,1 @@
-{
-  "node": {
-    "40b134fa22cca53f8a59d4fc647f12ee5273f89f6b": {
-      "workers": {
-        "app/auth/register/page": {
-          "moduleId": "[project]/.next-internal/server/app/auth/register/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/registerUser.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
-          "async": false
-        }
-      },
-      "layer": {
-        "app/auth/register/page": "action-browser"
-      }
-    }
-  },
-  "edge": {},
-  "encryptionKey": "Y1TdXeLpL49pYiBjElREu2Ba8maRdSJ1S1F6G1U1ODw="
-}
+{"node":{"409563c23203d6efc111f601b3f2eaa875a9c45e09":{"workers":{"app/auth/complete-profile/page":{"moduleId":"30984","async":false}},"layer":{"app/auth/complete-profile/page":"action-browser"}},"40bb0a5c449d837873409489acc31fff54268a6140":{"workers":{"app/auth/register/page":{"moduleId":"88866","async":false}},"layer":{"app/auth/register/page":"action-browser"}}},"edge":{},"encryptionKey":"Y1TdXeLpL49pYiBjElREu2Ba8maRdSJ1S1F6G1U1ODw="}
