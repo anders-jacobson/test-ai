@@ -1,3 +1,37 @@
-export default function DashboardHome() {
-  return <div className="p-4">Välkommen till din dashboard!</div>;
+import DashboardSidebar from '@/components/dashboard/sidebar';
+import KeyChart from '@/components/dashboard/key-chart';
+import { DataTable } from '@/components/dashboard/data-table';
+import { SectionCards } from '@/components/dashboard/section-cards';
+import { SiteHeader } from '@/components/dashboard/site-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+
+import data from './data.json';
+
+export default function Page() {
+  return (
+    <SidebarProvider
+      style={
+        {
+          '--sidebar-width': 'calc(var(--spacing) * 72)',
+          '--header-height': 'calc(var(--spacing) * 12)',
+        } as React.CSSProperties
+      }
+    >
+      <DashboardSidebar />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <SectionCards />
+              <div className="px-4 lg:px-6">
+                <KeyChart />
+              </div>
+              <DataTable data={data} />
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

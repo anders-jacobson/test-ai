@@ -135,22 +135,27 @@ Implementation roadmap for the Swedish housing cooperative key management applic
 
 ### Future Tasks
 
-- [ ] **Create basic layout and navigation structure** ⏳ _[Ready for breakdown]_
+- [x] **Create basic layout and navigation structure**
 
-  - [ ] Review and install shadcn/ui dashboard-01 block as the base layout ([reference](https://ui.shadcn.com/blocks))
-  - [ ] Remove cards section from the main content area
-  - [ ] Set up sidebar navigation using AppSidebar (Dashboard, Keys, Borrowers, etc.)
-  - [ ] Implement top header with app name/logo and user menu
-  - [ ] Add skip-to-content link for accessibility
-  - [ ] Ensure layout is responsive and accessible (sidebar collapses on mobile, keyboard navigation, ARIA roles)
-  - [ ] Document dashboard layout structure and shadcn/ui usage in coding standards
+  - [x] Use shadcn/ui dashboard-01 block as the base layout ([reference](https://ui.shadcn.com/blocks))
+  - [x] Keep one card at the top of the dashboard for future use (e.g., buttons or summary info)
+  - [x] Remove extra cards from the main content area
+  - [x] Add stacked bar chart below the card (one bar per key type, stacked by status: Available, In Use, Lost)
+  - [x] Set up sidebar navigation using AppSidebar (Dashboard, Keys, Borrowers, etc.)
+  - [x] Implement top header with app name/logo and user menu
+  - [x] Add skip-to-content link for accessibility
+  - [x] Ensure layout is responsive and accessible (sidebar collapses on mobile, keyboard navigation, ARIA roles)
+  - [x] The main data table on the dashboard should list all key copies (columns: Key Type, Copy Number, Status, Borrower, etc.)
+  - [x] Document dashboard layout structure and shadcn/ui usage in coding standards
+
+> **Note:** The dashboard structure (sidebar, header, cards, chart, table, navigation components) is now implemented as per the attached files in `components/dashboard/`. Future work should focus on refinement, integration, and enhancements.
 
 - [ ] **Dashboard main content: chart and table**
 
-  - [ ] Add stacked bar chart at the top of the dashboard main area (use shadcn/ui Bar Chart - Stacked + Legend, [reference](https://ui.shadcn.com/charts/bar#charts))
-  - [ ] Configure chart to show one bar per key type, stacked by status (Lost, Available, In Use)
+  - [x] Add stacked bar chart at the top of the dashboard main area (use shadcn/ui Bar Chart - Stacked + Legend, [reference](https://ui.shadcn.com/charts/bar#charts))
+  - [x] Configure chart to show one bar per key type, stacked by status (Lost, Available, In Use)
   - [ ] Connect chart data to key/copy data model
-  - [ ] Add data table below the chart (list all key copies with columns for type, status, borrower, etc.)
+  - [x] Add data table below the chart (list all key copies with columns for type, status, borrower, etc.)
   - [ ] Ensure chart and table are accessible and responsive
 
 - [ ] **Tailwind and CSS foundation**

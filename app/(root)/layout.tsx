@@ -1,5 +1,5 @@
 import React from 'react';
-import NavbarRoot from '../../components/NavbarRoot';
+import NavbarRoot from '../../components/root/NavbarRoot';
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,12 +1,6 @@
 import React from 'react';
 
 function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div>
-      <h1>Dashboard Layout</h1>
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
-
 export default Layout;

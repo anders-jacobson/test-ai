@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import IdleLogoutProvider from '@/components/IdleLogoutProvider';
+import IdleLogoutProvider from '@/components/root/IdleLogoutProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

@@ -34,7 +34,7 @@ export function LoginForm() {
       }
     } else {
       // Optionally redirect or reload page on success
-      window.location.href = '/';
+      window.location.href = '/dashboard';
     }
   }
 
