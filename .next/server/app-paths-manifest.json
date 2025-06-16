@@ -1,14 +1,4 @@
 {
-  "/api/prisma-test/route": "app/api/prisma-test/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/supabase-test/route": "app/api/supabase-test/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/auth/callback/route": "app/auth/callback/route.js",
-  "/auth/logout/page": "app/auth/logout/page.js",
-  "/auth/complete-profile/page": "app/auth/complete-profile/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/auth/register/page": "app/auth/register/page.js",
-  "/auth/confirmed/page": "app/auth/confirmed/page.js",
-  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
-  "/(root)/page": "app/(root)/page.js"
+  "/(root)/page": "app/(root)/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }

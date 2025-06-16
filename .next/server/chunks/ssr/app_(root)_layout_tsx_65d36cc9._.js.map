@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/andogpp/Documents/dev/Chas/11-examensarbete/test-ai/app/%28root%29/layout.tsx"],"sourcesContent":["import React from 'react';\n\nfunction Layout({ children }: { children: React.ReactNode }) {\n  return (\n    <div>\n      <h1>Navbar</h1>\n      {children}\n    </div>\n  );\n}\n\nexport default Layout;\n"],"names":[],"mappings":";;;;;AAEA,SAAS,OAAO,EAAE,QAAQ,EAAiC;IACzD,qBACE,8OAAC;;0BACC,8OAAC;0BAAG;;;;;;YACH;;;;;;;AAGP;uCAEe","debugId":null}}]
+}

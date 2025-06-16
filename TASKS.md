@@ -115,6 +115,7 @@ Implementation roadmap for the Swedish housing cooperative key management applic
   - [x] Test: Protected route access
 
 - [ ] **Create Row Level Security policies**
+
   - [ ] Design RLS policies for Profile table (user can only see own data)
   - [ ] Design RLS policies for KeyType table (filter by cooperativeId)
   - [ ] Design RLS policies for KeyCopy table (through KeyType relationship)
@@ -125,9 +126,40 @@ Implementation roadmap for the Swedish housing cooperative key management applic
   - [ ] Test: Cross-cooperative data isolation works
   - [ ] Document RLS policies in cursor rules
 
+- [ ] Implement 15-minute inactivity logout (client-side idle detection)
+  - [ ] Create `useIdleLogout` hook
+  - [ ] Integrate hook in main layout
+  - [ ] Test: User is logged out after 15 minutes of inactivity
+  - [ ] Test: Activity resets the timer
+
 ### Future Tasks
 
 - [ ] **Create basic layout and navigation structure** ⏳ _[Ready for breakdown]_
+
+  - [ ] Review and install shadcn/ui dashboard-01 block as the base layout ([reference](https://ui.shadcn.com/blocks))
+  - [ ] Remove cards section from the main content area
+  - [ ] Set up sidebar navigation using AppSidebar (Dashboard, Keys, Borrowers, etc.)
+  - [ ] Implement top header with app name/logo and user menu
+  - [ ] Add skip-to-content link for accessibility
+  - [ ] Ensure layout is responsive and accessible (sidebar collapses on mobile, keyboard navigation, ARIA roles)
+  - [ ] Document dashboard layout structure and shadcn/ui usage in coding standards
+
+- [ ] **Dashboard main content: chart and table**
+
+  - [ ] Add stacked bar chart at the top of the dashboard main area (use shadcn/ui Bar Chart - Stacked + Legend, [reference](https://ui.shadcn.com/charts/bar#charts))
+  - [ ] Configure chart to show one bar per key type, stacked by status (Lost, Available, In Use)
+  - [ ] Connect chart data to key/copy data model
+  - [ ] Add data table below the chart (list all key copies with columns for type, status, borrower, etc.)
+  - [ ] Ensure chart and table are accessible and responsive
+
+- [ ] **Tailwind and CSS foundation**
+
+  - [ ] Review and update tailwind.config.js for accessibility (font size, color contrast, touch targets)
+  - [ ] Set up global styles in app/globals.css for theming and accessibility (base font size, color variables, focus states)
+  - [ ] Import and configure any required fonts
+  - [ ] Test base styles and components for accessibility (contrast, focus, keyboard navigation)
+  - [ ] Document Tailwind and CSS conventions in coding standards
+
 - [ ] **Implement user profile management** ⏳ _[Ready for breakdown]_
 - [ ] **Set up shadcn/ui component library** ⏳ _[Ready for breakdown]_
 - [ ] **Configure Tailwind with accessibility-focused settings** ⏳ _[Ready for breakdown]_
