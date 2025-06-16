@@ -69,7 +69,6 @@ export default function CompleteProfilePage() {
               onChange={(e) => setCooperative(e.target.value)}
               className="text-lg py-3 block w-full rounded-md border border-border bg-background px-3 focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="Ex: Brf Solrosen"
-              autoFocus
             />
           </div>
           {error && <div className="text-destructive text-sm">{error}</div>}
