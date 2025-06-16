@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
-const IDLE_TIMEOUT = 1 * 60 * 1000; // 1 minute for testing
+const IDLE_TIMEOUT = 15 * 60 * 1000; // 1 minute for testing
 
 export default function useIdleLogout() {
   const timer = useRef<NodeJS.Timeout | null>(null);
