@@ -122,14 +122,14 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-// Server-side: Get the current user's Profile.id from Supabase Auth session (for Server Actions)
-async function getCurrentProfileId() {
+// Server-side: Get the current user's User.id from Supabase Auth session (for Server Actions)
+async function getCurrentUserId() {
     const supabase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$auth$2d$helpers$2d$nextjs$2f$dist$2f$index$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["createServerActionClient"])({
         cookies: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cookies"]
     });
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.email) throw new Error('Not authenticated');
-    const profile = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].profile.findUnique({
+    const user = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].user.findUnique({
         where: {
             email: session.user.email
         },
@@ -137,20 +137,20 @@ async function getCurrentProfileId() {
             id: true
         }
     });
-    if (!profile) throw new Error('Profile not found');
-    return profile.id;
+    if (!user) throw new Error('User not found');
+    return user.id;
 }
 async function getKeyStatusSummary() {
-    const profileId = await getCurrentProfileId();
-    // Get all key types for this profile (cooperative)
+    const userId = await getCurrentUserId();
+    // Get all key types for this user (cooperative)
     // If you get a type error here, run `npx prisma generate` to update your client types.
     const keyTypes = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].keyType.findMany({
         where: {
-            profileId
+            userId
         },
         select: {
             id: true,
-            name: true,
+            label: true,
             keyCopies: {
                 select: {
                     status: true
@@ -171,17 +171,17 @@ async function getKeyStatusSummary() {
             else if (copy.status === 'LOST') counts.Lost++;
         });
         return {
-            keyType: kt.name,
+            keyType: kt.label,
             ...counts
         };
     });
 }
 async function getBorrowedKeysTableData() {
-    const profileId = await getCurrentProfileId();
-    // Get all lending records for this profile (cooperative)
+    const userId = await getCurrentUserId();
+    // Get all lending records for this user (cooperative)
     const lendingRecords = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].lendingRecord.findMany({
         where: {
-            profileId
+            userId
         },
         include: {
             borrower: true,

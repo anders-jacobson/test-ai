@@ -1,18 +1,12 @@
 'use server';
 import { prisma } from '@/lib/prisma';
 
-export async function updateProfile({
-  email,
-  cooperative,
-}: {
-  email: string;
-  cooperative: string;
-}) {
+export async function updateUser({ email, cooperative }: { email: string; cooperative: string }) {
   if (!email || !cooperative) {
     return { error: 'Email and cooperative name are required.' };
   }
   try {
-    await prisma.profile.update({
+    await prisma.user.update({
       where: { email },
       data: { cooperative },
     });

@@ -8,43 +8,38 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Profile {
+model User {
   id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email          String          @unique
   name           String?
   cooperative    String
-  createdAt      DateTime        @default(now()) @map("created_at")
+  createdAt      DateTime        @default(now())
   borrowers      Borrower[]
   keyTypes       KeyType[]
   lendingRecords LendingRecord[]
-
-  @@map("profiles")
 }
 
 model KeyType {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String    @db.VarChar(100)
-  accessArea  String?   @map("access_area")
-  totalCopies Int       @default(0) @map("total_copies")
-  profileId   String    @map("cooperative_id") @db.Uuid
-  createdAt   DateTime  @default(now()) @map("created_at")
+  label       String    @db.VarChar(2)
+  function    String    @db.VarChar(100)
+  accessArea  String?
+  userId      String    @db.Uuid
+  createdAt   DateTime  @default(now())
   keyCopies   KeyCopy[]
-  profile     Profile   @relation(fields: [profileId], references: [id])
-
-  @@map("key_types")
+  user        User      @relation(fields: [userId], references: [id])
 }
 
 model KeyCopy {
   id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  keyTypeId      String          @map("key_type_id") @db.Uuid
-  copyNumber     Int             @map("copy_number")
+  keyTypeId      String          @db.Uuid
+  copyNumber     Int
   status         KeyStatus       @default(AVAILABLE)
-  createdAt      DateTime        @default(now()) @map("created_at")
+  createdAt      DateTime        @default(now())
   keyType        KeyType         @relation(fields: [keyTypeId], references: [id], onDelete: Cascade)
   lendingRecords LendingRecord[]
 
   @@unique([keyTypeId, copyNumber])
-  @@map("key_copies")
 }
 
 model Borrower {
@@ -53,36 +48,30 @@ model Borrower {
   email          String?         @db.VarChar(255)
   phone          String?         @db.VarChar(20)
   company        String?         @db.VarChar(100)
-  profileId      String          @map("cooperative_id") @db.Uuid
-  createdAt      DateTime        @default(now()) @map("created_at")
-  profile        Profile         @relation(fields: [profileId], references: [id])
+  userId         String          @db.Uuid
+  createdAt      DateTime        @default(now())
+  user           User            @relation(fields: [userId], references: [id])
   lendingRecords LendingRecord[]
-
-  @@map("borrowers")
 }
 
 model LendingRecord {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  keyCopyId    String    @map("key_copy_id") @db.Uuid
-  borrowerId   String    @map("borrower_id") @db.Uuid
-  lentDate     DateTime  @default(now()) @map("lent_date") @db.Date
-  endDate      DateTime? @map("end_date") @db.Date
+  keyCopyId    String    @db.Uuid
+  borrowerId   String    @db.Uuid
+  lentDate     DateTime  @default(now())
+  endDate      DateTime?
   notes        String?
-  idChecked    Boolean   @default(false) @map("id_checked")
-  returnedDate DateTime? @map("returned_date") @db.Date
-  profileId    String    @map("cooperative_id") @db.Uuid
-  createdAt    DateTime  @default(now()) @map("created_at")
+  idChecked    Boolean   @default(false)
+  returnedDate DateTime?
+  userId       String    @db.Uuid
+  createdAt    DateTime  @default(now())
   borrower     Borrower  @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
-  profile      Profile   @relation(fields: [profileId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   keyCopy      KeyCopy   @relation(fields: [keyCopyId], references: [id], onDelete: Cascade)
-
-  @@map("lending_records")
 }
 
 enum KeyStatus {
   AVAILABLE
   OUT
   LOST
-
-  @@map("key_status")
 }

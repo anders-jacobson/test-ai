@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { updateProfile } from '@/app/actions/updateProfile';
+import { updateUser } from '@/app/actions/updateProfile';
 import { supabase } from '@/lib/supabase';
 
 export default function CompleteProfilePage() {
@@ -31,7 +31,7 @@ export default function CompleteProfilePage() {
       setLoading(false);
       return;
     }
-    const result = await updateProfile({ email, cooperative });
+    const result = await updateUser({ email, cooperative });
     if (result.error) {
       setError(result.error);
       setLoading(false);

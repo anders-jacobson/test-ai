@@ -3,35 +3,35 @@ import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 
-// Server-side: Get the current user's Profile.id from Supabase Auth session (for Server Actions)
-async function getCurrentProfileId() {
+// Server-side: Get the current user's User.id from Supabase Auth session (for Server Actions)
+async function getCurrentUserId() {
   const supabase = createServerActionClient({ cookies });
   const {
     data: { session },
   } = await supabase.auth.getSession();
   if (!session?.user?.email) throw new Error('Not authenticated');
-  const profile = await prisma.profile.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     select: { id: true },
   });
-  if (!profile) throw new Error('Profile not found');
-  return profile.id;
+  if (!user) throw new Error('User not found');
+  return user.id;
 }
 
 export async function getKeyStatusSummary() {
-  const profileId = await getCurrentProfileId();
-  // Get all key types for this profile (cooperative)
+  const userId = await getCurrentUserId();
+  // Get all key types for this user (cooperative)
   // If you get a type error here, run `npx prisma generate` to update your client types.
   const keyTypes = (await prisma.keyType.findMany({
-    where: { profileId },
+    where: { userId },
     select: {
       id: true,
-      name: true,
+      label: true,
       keyCopies: {
         select: { status: true },
       },
     },
-  })) as unknown as Array<{ id: string; name: string; keyCopies: { status: string }[] }>;
+  })) as unknown as Array<{ id: string; label: string; keyCopies: { status: string }[] }>;
 
   // Aggregate counts for each status
   return keyTypes.map((kt) => {
@@ -42,17 +42,17 @@ export async function getKeyStatusSummary() {
       else if (copy.status === 'LOST') counts.Lost++;
     });
     return {
-      keyType: kt.name,
+      keyType: kt.label,
       ...counts,
     };
   });
 }
 
 export async function getBorrowedKeysTableData() {
-  const profileId = await getCurrentProfileId();
-  // Get all lending records for this profile (cooperative)
+  const userId = await getCurrentUserId();
+  // Get all lending records for this user (cooperative)
   const lendingRecords = await prisma.lendingRecord.findMany({
-    where: { profileId },
+    where: { userId },
     include: {
       borrower: true,
       keyCopy: true,

@@ -20,16 +20,16 @@ export async function GET(req: NextRequest) {
 
   const email = session.user.email;
 
-  // 2. Query Profile table for user
-  const profile = await prisma.profile.findUnique({
+  // 2. Query User table for user
+  const user = await prisma.user.findUnique({
     where: { email },
   });
 
-  if (!profile || !profile.cooperative) {
-    // No profile or missing cooperative, redirect to complete profile
+  if (!user || !user.cooperative) {
+    // No user or missing cooperative, redirect to complete profile
     return NextResponse.redirect(new URL('/auth/complete-profile', req.url));
   }
 
-  // Profile is complete, redirect to dashboard
+  // User is complete, redirect to dashboard
   return NextResponse.redirect(new URL('/dashboard', req.url));
 }

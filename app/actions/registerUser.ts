@@ -33,8 +33,8 @@ export async function registerUser(formData: FormData) {
       return { error: error.message };
     }
 
-    // Create user profile in the database
-    await prisma.profile.create({
+    // Create user in the database
+    await prisma.user.create({
       data: {
         email,
         cooperative,

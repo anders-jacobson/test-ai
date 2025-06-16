@@ -140,12 +140,14 @@ export default function RegisterPage() {
                 </button>
               </form>
             )}
-            <div className="text-center text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <Link href="/auth/login" className="underline">
-                Log in
-              </Link>
-            </div>
+            {!success && (
+              <div className="text-center text-sm text-muted-foreground">
+                Already have an account?{' '}
+                <Link href="/auth/login" className="underline">
+                  Log in
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

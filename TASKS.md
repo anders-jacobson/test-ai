@@ -101,19 +101,20 @@ Implementation roadmap for the Swedish housing cooperative key management applic
     - [x] Replace form with confirmation message after registration
     - [x] Hide Google sign up and divider after registration
     - [x] Show user-friendly error if email already exists
-    - [ ] Google Auth registration (pending)
+    - [x] Google Auth registration (now working with correct Supabase Auth helper)
   - [x] Create `app/auth/confirmed/page.tsx` (email confirmation page)
     - [x] Show confirmation message and login button after email confirmation
     - [x] Update Supabase email template to redirect to /auth/confirmed
   - [x] Create `app/auth/callback/route.ts` (OAuth callback handler)
-  - [ ] Build cooperative name collection form in registration
+  - [x] Build cooperative name collection form in registration
   - [x] Create server action for user profile creation
   - [x] Implement session management with middleware
   - [x] Create `middleware.ts` for route protection
   - [x] Add login/logout functionality
-  - [ ] Test: Email registration with cooperative name
+  - [x] Test: Email registration with cooperative name
   - [x] Test: Google OAuth login flow
   - [x] Test: Protected route access
+  - [x] Login form and server actions now use the correct Supabase Auth helpers for Next.js, ensuring server-side session access and secure authentication.
 
 - [ ] **Create Row Level Security policies**
 
@@ -217,6 +218,7 @@ Implementation roadmap for the Swedish housing cooperative key management applic
   - [ ] Test: Add new borrower with all fields
   - [ ] Test: Search and autocomplete works
   - [ ] Test: CSV import processes correctly
+  - [ ] **Business Rule (to implement): A borrower should only exist if they have at least one key (LendingRecord). When the last key is removed from a borrower, the borrower should also be deleted. This must be enforced in application logic, not at the database schema level.**
 
 - [ ] **Key lending workflow implementation**
 

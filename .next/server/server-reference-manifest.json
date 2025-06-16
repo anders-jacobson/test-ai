@@ -1,5 +1,16 @@
 {
   "node": {
+    "40b134fa22cca53f8a59d4fc647f12ee5273f89f6b": {
+      "workers": {
+        "app/auth/register/page": {
+          "moduleId": "[project]/.next-internal/server/app/auth/register/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/registerUser.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/auth/register/page": "action-browser"
+      }
+    },
     "00beb11437569c24138a16afd3b2fc7a32e506cdf9": {
       "workers": {
         "app/(dashboard)/dashboard/page": {

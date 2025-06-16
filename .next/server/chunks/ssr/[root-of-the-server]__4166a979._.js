@@ -176,8 +176,8 @@ async function registerUser(formData) {
                 error: error.message
             };
         }
-        // Create user profile in the database
-        await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].profile.create({
+        // Create user in the database
+        await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].user.create({
             data: {
                 email,
                 cooperative

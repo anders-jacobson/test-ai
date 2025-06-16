@@ -2,25 +2,25 @@ import { prisma } from '../lib/prisma';
 import { KeyStatus } from '@prisma/client';
 
 async function main() {
-  const profileId = '106d02e9-30c4-42dd-8dbd-bec6164c5ffa';
+  const userId = '106d02e9-30c4-42dd-8dbd-bec6164c5ffa';
 
   // 1. Create KeyTypes
   const keyType1 = await prisma.keyType.create({
     data: {
-      name: 'Main Entrance',
+      label: 'Main Entrance',
+      function: 'Lobby Access',
       accessArea: 'Lobby',
-      totalCopies: 3,
-      profileId: profileId,
-    } as any,
+      userId: userId,
+    },
   });
 
   const keyType2 = await prisma.keyType.create({
     data: {
-      name: 'Server Room',
+      label: 'Server Room',
+      function: 'IT Department Access',
       accessArea: 'IT Department',
-      totalCopies: 2,
-      profileId: profileId,
-    } as any,
+      userId: userId,
+    },
   });
 
   // 2. Create KeyCopies
@@ -34,15 +34,15 @@ async function main() {
     ],
   });
 
-  // 3. Create Borrowers
+  // 3. Create Borrowers (only if they have keys)
   const borrower1 = await prisma.borrower.create({
     data: {
       name: 'Alice Smith',
       email: 'alice@example.com',
       phone: '123-456-7890',
       company: 'Acme Corp',
-      profileId: profileId,
-    } as any,
+      userId: userId,
+    },
   });
 
   const borrower2 = await prisma.borrower.create({
@@ -51,8 +51,8 @@ async function main() {
       email: 'bob@example.com',
       phone: '987-654-3210',
       company: 'Beta LLC',
-      profileId: profileId,
-    } as any,
+      userId: userId,
+    },
   });
 
   // 4. Create LendingRecords
@@ -73,8 +73,8 @@ async function main() {
         notes: 'Urgent access required',
         idChecked: true,
         returnedDate: null,
-        profileId: profileId,
-      } as any,
+        userId: userId,
+      },
     });
 
     await prisma.lendingRecord.create({
@@ -86,8 +86,8 @@ async function main() {
         notes: null,
         idChecked: false,
         returnedDate: null,
-        profileId: profileId,
-      } as any,
+        userId: userId,
+      },
     });
   }
 
