@@ -9,7 +9,6 @@ import {
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
-  ChartTooltipContent,
 } from '@/components/ui/chart';
 
 const chartConfig = {
@@ -30,7 +29,7 @@ const chartConfig = {
 export default function KeyChart({
   data,
 }: {
-  data: { keyType: string; Available: number; InUse: number; Lost: number }[];
+  data: { keyType: string; keyFunction: string; Available: number; InUse: number; Lost: number }[];
 }) {
   return (
     <Card>
@@ -42,7 +41,33 @@ export default function KeyChart({
           <BarChart accessibilityLayer data={data}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="keyType" tickLine={false} tickMargin={10} axisLine={false} />
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip
+              content={({ active, payload, label }) => {
+                if (active && payload && payload.length && label) {
+                  const data = payload[0].payload;
+                  return (
+                    <div className="rounded-lg border bg-background p-2 shadow-md">
+                      <div className="grid gap-2">
+                        <div className="text-sm text-muted-foreground">{data.keyFunction}</div>
+                        <div className="grid gap-1">
+                          {payload.map((entry, index) => (
+                            <div key={index} className="flex items-center gap-2 text-sm">
+                              <div
+                                className="h-2 w-2 rounded-full"
+                                style={{ backgroundColor: entry.color }}
+                              />
+                              <span className="text-muted-foreground">{entry.name}:</span>
+                              <span className="font-medium">{entry.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
             <ChartLegend content={<ChartLegendContent />} />
             <Bar
               dataKey="Available"

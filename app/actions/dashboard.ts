@@ -26,11 +26,17 @@ export async function getKeyStatusSummary() {
     select: {
       id: true,
       label: true,
+      function: true,
       keyCopies: {
         select: { status: true },
       },
     },
-  })) as unknown as Array<{ id: string; label: string; keyCopies: { status: string }[] }>;
+  })) as unknown as Array<{
+    id: string;
+    label: string;
+    function: string;
+    keyCopies: { status: string }[];
+  }>;
 
   // Aggregate counts for each status
   return keyTypes.map((kt) => {
@@ -42,6 +48,7 @@ export async function getKeyStatusSummary() {
     });
     return {
       keyType: kt.label,
+      keyFunction: kt.function,
       ...counts,
     };
   });
