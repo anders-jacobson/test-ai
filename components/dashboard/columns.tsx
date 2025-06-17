@@ -36,8 +36,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 // Define the types for the data structure
-export type KeyStatus = 'borrowed' | 'returned' | 'lost';
-
 export type BorrowedKey = {
   borrowerName: string; // Name of the person
   company?: string; // Company name if applicable
@@ -46,7 +44,6 @@ export type BorrowedKey = {
   keyId: string; // Key ID
   keyLabel: string; // Key label (e.g., "A", "B", etc.)
   copyNumber: number; // Copy number
-  status: KeyStatus; // Status of the key
   borrowedAt: string; // Date when the key was borrowed
   returnedAt?: string; // Date when the key was returned (optional)
 };
@@ -83,16 +80,11 @@ export const columns: ColumnDef<BorrowedKey>[] = [
     },
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-  },
-  {
     accessorKey: 'date',
     header: 'Last change',
     cell: ({ row }) => {
-      // Determine the correct date based on the status
-      const status = row.original.status;
-      const date = status === 'returned' ? row.original.returnedAt : row.original.borrowedAt;
+      // Show returned date if available, otherwise show borrowed date
+      const date = row.original.returnedAt || row.original.borrowedAt;
 
       return <div>{formatDate(date || '')}</div>;
     },

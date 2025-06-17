@@ -14,17 +14,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
 import { Input } from '@/components/ui/input';
-
 import {
   Table,
   TableBody,
@@ -33,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { IconFilter, IconPlus } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -64,19 +54,6 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
     table.getColumn('borrowerName')?.setFilterValue(value);
   };
 
-  // Handle filtering by status
-  const handleStatusFilter = (status: string) => {
-    table.getColumn('status')?.setFilterValue(status === 'All' ? '' : status);
-  };
-
-  // Clear the status filter
-  const clearStatusFilter = () => {
-    table.getColumn('status')?.setFilterValue('');
-  };
-
-  // Check if the status filter is active
-  const isStatusFilterActive = !!table.getColumn('status')?.getFilterValue();
-
   return (
     <div>
       <div className="flex items-center justify-between py-4 space-x-2 w-full">
@@ -86,46 +63,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
           onChange={(event) => handleNameFilter(event.target.value)}
           className="max-w-xs"
         />
-        <div className="space-x-2 ml-auto">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-1">
-                <IconFilter className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Status</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Filter by status</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem
-                checked={table.getColumn('status')?.getFilterValue() === 'borrowed'}
-                onCheckedChange={() => handleStatusFilter('borrowed')}
-              >
-                Borrowed
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={table.getColumn('status')?.getFilterValue() === 'returned'}
-                onCheckedChange={() => handleStatusFilter('returned')}
-              >
-                Returned
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={table.getColumn('status')?.getFilterValue() === 'lost'}
-                onCheckedChange={() => handleStatusFilter('lost')}
-              >
-                Lost
-              </DropdownMenuCheckboxItem>
-
-              {isStatusFilterActive && (
-                <div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem onClick={clearStatusFilter}>
-                    Clear filter
-                  </DropdownMenuCheckboxItem>
-                </div>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="ml-auto">
           <Button className="gap-1">
             <IconPlus className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Issue key</span>

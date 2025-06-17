@@ -70,9 +70,6 @@ export async function getBorrowedKeysTableData() {
   });
 
   return lendingRecords.map((record) => {
-    let status: 'borrowed' | 'returned' | 'lost' = 'borrowed';
-    if (record.keyCopy.status === 'LOST') status = 'lost';
-    else if (record.returnedDate) status = 'returned';
     return {
       borrowerName: record.borrower.name,
       company: record.borrower.company ?? '',
@@ -81,7 +78,6 @@ export async function getBorrowedKeysTableData() {
       keyId: record.keyCopyId,
       keyLabel: record.keyCopy.keyType.label,
       copyNumber: record.keyCopy.copyNumber,
-      status,
       borrowedAt: record.lentDate?.toISOString() ?? '',
       returnedAt: record.returnedDate?.toISOString() ?? '',
     };
