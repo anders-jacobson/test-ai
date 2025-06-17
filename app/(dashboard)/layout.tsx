@@ -19,9 +19,6 @@ async function Layout({ children }: { children: React.ReactNode }) {
   let user: { name: string; email: string } | undefined;
 
   if (authUser) {
-    console.log('🔍 Auth user ID:', authUser.id);
-    console.log('🔍 Auth user email:', authUser.email);
-
     try {
       // Use Prisma to find user by email (matching dashboard actions pattern)
       const profile = await prisma.user.findUnique({
@@ -33,25 +30,16 @@ async function Layout({ children }: { children: React.ReactNode }) {
         },
       });
 
-      console.log('📊 Prisma profile query result:', profile);
-
       if (profile) {
         cooperative = profile.cooperative;
         user = {
           name: profile.name || '',
           email: profile.email,
         };
-        console.log('✅ Set cooperative to:', cooperative);
-        console.log('✅ Set user to:', user);
-      } else {
-        console.log('❌ No profile found in Prisma User table');
-        console.log('🔍 This user may need to complete registration');
       }
     } catch (error) {
-      console.log('❌ Prisma query error:', error);
+      console.error('Failed to fetch user profile:', error);
     }
-  } else {
-    console.log('❌ No authenticated user');
   }
 
   return (
@@ -64,10 +52,6 @@ async function Layout({ children }: { children: React.ReactNode }) {
       }
     >
       <DashboardSidebar cooperative={cooperative} user={user} />
-      {/* Debug info */}
-      <div style={{ display: 'none' }}>
-        DEBUG: cooperative={JSON.stringify(cooperative)}, user={JSON.stringify(user)}
-      </div>
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>

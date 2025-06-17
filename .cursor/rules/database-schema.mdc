@@ -3,13 +3,50 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Database Schema (Prisma + Supabase)
+# 🗄️ Database Schema & Access Patterns
 
-## Prisma Schema (prisma/schema.prisma)
+## 🚨 CRITICAL DATABASE ACCESS RULES
+
+### ❌ NEVER MIX DATABASE ACCESS PATTERNS
+- **NEVER use `supabase.from('TableName')` for application data**
+- **ALWAYS use Prisma for all database queries**
+- Supabase client is ONLY for authentication, not data queries
+
+### ✅ ALWAYS Use Prisma for Data Operations
+```typescript
+// ✅ CORRECT - Use Prisma for all data operations
+import { prisma } from '@/lib/prisma';
+
+const user = await prisma.user.findUnique({
+  where: { email: authUser.email! },
+  select: { cooperative: true, name: true, email: true }
+});
+
+// ❌ WRONG - Never use Supabase for data queries
+const { data } = await supabase.from('User')...
+```
+
+### 🔍 User Lookup Pattern (STANDARD)
+**Always lookup users by email, never by Auth ID:**
+```typescript
+// ✅ CORRECT - Standard user lookup pattern
+async function getCurrentUserId() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) throw new Error('Not authenticated');
+  
+  const userRecord = await prisma.user.findUnique({
+    where: { email: user.email },
+    select: { id: true }
+  });
+  if (!userRecord) throw new Error('User not found');
+  return userRecord.id;
+}
+```
+
+## 📊 Current Prisma Schema (prisma/schema.prisma)
+
 ```prisma
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,114 +57,236 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Profile {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email         String   @unique
-  name          String?
-  cooperative   String   // Required: Each user belongs to exactly one cooperative
-  createdAt     DateTime @default(now()) @map("created_at")
-  
-  // Relations
-  keyTypes      KeyType[]
-  borrowers     Borrower[]
+model User {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email          String          @unique
+  name           String?
+  cooperative    String          // Required: Housing cooperative name
+  createdAt      DateTime        @default(now())
+  borrowers      Borrower[]
+  keyTypes       KeyType[]
   lendingRecords LendingRecord[]
-  
-  @@map("profiles")
 }
 
 model KeyType {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String   @db.VarChar(100)
-  accessArea    String?  @map("access_area")
-  totalCopies   Int      @default(0) @map("total_copies")
-  cooperativeId String   @map("cooperative_id") @db.Uuid
-  createdAt     DateTime @default(now()) @map("created_at")
-  
-  // Relations
-  profile       Profile    @relation(fields: [cooperativeId], references: [id])
-  keyCopies     KeyCopy[]
-  
-  @@map("key_types")
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  label       String    @db.VarChar(2)     // e.g., "A1", "B2"
+  function    String    @db.VarChar(100)   // e.g., "Main entrance"
+  accessArea  String?                      // Optional access description
+  userId      String    @db.Uuid
+  createdAt   DateTime  @default(now())
+  keyCopies   KeyCopy[]
+  user        User      @relation(fields: [userId], references: [id])
 }
 
 model KeyCopy {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  keyTypeId  String    @map("key_type_id") @db.Uuid
-  copyNumber Int       @map("copy_number")
-  status     KeyStatus @default(AVAILABLE)
-  createdAt  DateTime  @default(now()) @map("created_at")
-  
-  // Relations
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  keyTypeId      String          @db.Uuid
+  copyNumber     Int
+  status         KeyStatus       @default(AVAILABLE)
+  createdAt      DateTime        @default(now())
   keyType        KeyType         @relation(fields: [keyTypeId], references: [id], onDelete: Cascade)
   lendingRecords LendingRecord[]
-  
+
   @@unique([keyTypeId, copyNumber])
-  @@map("key_copies")
 }
 
 model Borrower {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String   @db.VarChar(100)
-  email         String?  @db.VarChar(255)
-  phone         String?  @db.VarChar(20)
-  company       String?  @db.VarChar(100)
-  cooperativeId String   @map("cooperative_id") @db.Uuid
-  createdAt     DateTime @default(now()) @map("created_at")
-  
-  // Relations
-  profile        Profile         @relation(fields: [cooperativeId], references: [id])
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String          @db.VarChar(100)
+  email          String?         @db.VarChar(255)
+  phone          String?         @db.VarChar(20)
+  company        String?         @db.VarChar(100)
+  userId         String          @db.Uuid
+  createdAt      DateTime        @default(now())
+  user           User            @relation(fields: [userId], references: [id])
   lendingRecords LendingRecord[]
-  
-  @@map("borrowers")
 }
 
 model LendingRecord {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  keyCopyId     String    @map("key_copy_id") @db.Uuid
-  borrowerId    String    @map("borrower_id") @db.Uuid
-  lentDate      DateTime  @default(now()) @map("lent_date") @db.Date
-  endDate       DateTime? @map("end_date") @db.Date
-  notes         String?
-  idChecked     Boolean   @default(false) @map("id_checked")
-  returnedDate  DateTime? @map("returned_date") @db.Date
-  cooperativeId String    @map("cooperative_id") @db.Uuid
-  createdAt     DateTime  @default(now()) @map("created_at")
-  
-  // Relations
-  keyCopy    KeyCopy  @relation(fields: [keyCopyId], references: [id], onDelete: Cascade)
-  borrower   Borrower @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
-  profile    Profile  @relation(fields: [cooperativeId], references: [id])
-  
-  @@map("lending_records")
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  keyCopyId    String    @db.Uuid
+  borrowerId   String    @db.Uuid
+  lentDate     DateTime  @default(now())
+  endDate      DateTime?
+  notes        String?
+  idChecked    Boolean   @default(false)
+  returnedDate DateTime?
+  userId       String    @db.Uuid
+  createdAt    DateTime  @default(now())
+  borrower     Borrower  @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id])
+  keyCopy      KeyCopy   @relation(fields: [keyCopyId], references: [id], onDelete: Cascade)
 }
 
 enum KeyStatus {
   AVAILABLE
   OUT
   LOST
-  
-  @@map("key_status")
 }
 ```
 
-## Generated TypeScript Types (from Prisma)
-```typescript
-// Auto-generated by Prisma - DO NOT EDIT MANUALLY
+## 🏗️ Standard Prisma Patterns
 
-export type Profile = {
+### Server Actions Pattern
+```typescript
+'use server';
+import { prisma } from '@/lib/prisma';
+import { createClient } from '@/utils/supabase/server';
+
+async function getCurrentUserId() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) throw new Error('Not authenticated');
+  
+  const userRecord = await prisma.user.findUnique({
+    where: { email: user.email },
+    select: { id: true }
+  });
+  if (!userRecord) throw new Error('User not found');
+  return userRecord.id;
+}
+
+export async function getKeyStatusSummary() {
+  const userId = await getCurrentUserId();
+  
+  const keyTypes = await prisma.keyType.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      label: true,
+      keyCopies: { select: { status: true } }
+    }
+  });
+  
+  return keyTypes.map(kt => {
+    const counts = { Available: 0, InUse: 0, Lost: 0 };
+    kt.keyCopies.forEach(copy => {
+      if (copy.status === 'AVAILABLE') counts.Available++;
+      else if (copy.status === 'OUT') counts.InUse++;
+      else if (copy.status === 'LOST') counts.Lost++;
+    });
+    return { keyType: kt.label, ...counts };
+  });
+}
+```
+
+### Layout Component Pattern (Server Component)
+```typescript
+import { createClient } from '@/utils/supabase/server';
+import { prisma } from '@/lib/prisma';
+
+async function Layout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+
+  let cooperative: string | undefined;
+  let user: { name: string; email: string } | undefined;
+
+  if (authUser) {
+    try {
+      const profile = await prisma.user.findUnique({
+        where: { email: authUser.email! },
+        select: { cooperative: true, name: true, email: true }
+      });
+
+      if (profile) {
+        cooperative = profile.cooperative;
+        user = {
+          name: profile.name || '',
+          email: profile.email
+        };
+      }
+    } catch (error) {
+      console.log('❌ Prisma query error:', error);
+    }
+  }
+
+  return (
+    <SidebarProvider>
+      <DashboardSidebar cooperative={cooperative} user={user} />
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
+  );
+}
+```
+
+## 🔧 Prisma Client Setup (lib/prisma.ts)
+```typescript
+import { PrismaClient } from '@prisma/client';
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+```
+
+## 🚨 Common Mistakes to Avoid
+
+### 1. Mixing Database Access Patterns
+```typescript
+// ❌ WRONG - Don't mix Supabase queries with Prisma
+const { data: profile } = await supabase.from('User')...
+const keyTypes = await prisma.keyType.findMany()...
+
+// ✅ CORRECT - Use Prisma consistently
+const profile = await prisma.user.findUnique()...
+const keyTypes = await prisma.keyType.findMany()...
+```
+
+### 2. Wrong User Lookup Method
+```typescript
+// ❌ WRONG - Don't lookup by Auth ID
+const profile = await prisma.user.findUnique({
+  where: { id: authUser.id }  // Auth ID ≠ Database ID
+});
+
+// ✅ CORRECT - Always lookup by email
+const profile = await prisma.user.findUnique({
+  where: { email: authUser.email! }
+});
+```
+
+### 3. Inconsistent Error Handling
+```typescript
+// ✅ CORRECT - Always handle Prisma errors properly
+try {
+  const user = await prisma.user.findUnique({
+    where: { email: authUser.email! }
+  });
+  if (!user) {
+    console.log('User not found - may need profile completion');
+    return null;
+  }
+  return user;
+} catch (error) {
+  console.log('Database error:', error);
+  throw new Error('Failed to fetch user');
+}
+```
+
+## 📋 TypeScript Types (Auto-generated by Prisma)
+
+Generate types with: `npx prisma generate`
+
+```typescript
+export type User = {
   id: string
   email: string
   name: string | null
-  cooperative: string // Required cooperative name
+  cooperative: string
   createdAt: Date
 }
 
 export type KeyType = {
   id: string
-  name: string
+  label: string
+  function: string
   accessArea: string | null
-  totalCopies: number
-  cooperativeId: string
+  userId: string
   createdAt: Date
 }
 
@@ -139,29 +298,6 @@ export type KeyCopy = {
   createdAt: Date
 }
 
-export type Borrower = {
-  id: string
-  name: string
-  email: string | null
-  phone: string | null
-  company: string | null
-  cooperativeId: string
-  createdAt: Date
-}
-
-export type LendingRecord = {
-  id: string
-  keyCopyId: string
-  borrowerId: string
-  lentDate: Date
-  endDate: Date | null
-  notes: string | null
-  idChecked: boolean
-  returnedDate: Date | null
-  cooperativeId: string
-  createdAt: Date
-}
-
 export enum KeyStatus {
   AVAILABLE = 'AVAILABLE',
   OUT = 'OUT',
@@ -169,70 +305,23 @@ export enum KeyStatus {
 }
 ```
 
-## Prisma Client Setup (lib/prisma.ts)
-```typescript
-import { PrismaClient } from '@prisma/client'
+## 🔄 Database Migration Commands
+```bash
+# Generate Prisma client after schema changes
+npx prisma generate
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
+# Create new migrations
+npx prisma migrate dev --name descriptive_migration_name
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+# Reset database (development only)
+npx prisma migrate reset
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+# View database in Prisma Studio
+npx prisma studio
 ```
 
-## Custom Hook Patterns with Prisma
-```typescript
-export function useKeyTypes() {
-  const [data, setData] = useState<KeyType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    async function fetchKeyTypes() {
-      try {
-        const response = await fetch('/api/key-types');
-        if (!response.ok) throw new Error('Failed to fetch');
-        const keyTypes = await response.json();
-        setData(keyTypes);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchKeyTypes();
-  }, []);
-  
-  return { data, loading, error };
-}
-```
+## 🎯 Remember: Supabase vs Prisma Roles
 
-## Server Actions with Prisma
-```typescript
-'use server'
-
-import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
-
-export async function createKeyType(formData: FormData) {
-  try {
-    const keyType = await prisma.keyType.create({
-      data: {
-        name: formData.get('name') as string,
-        accessArea: formData.get('accessArea') as string,
-        totalCopies: parseInt(formData.get('totalCopies') as string),
-        cooperativeId: formData.get('cooperativeId') as string,
-      }
-    });
-    
-    revalidatePath('/dashboard');
-    return { success: true, data: keyType };
-  } catch (error) {
-    console.error('Failed to create key type:', error);
-    return { success: false, error: 'Failed to create key type' };
-  }
-}
-```
+- **Supabase**: Authentication only (`supabase.auth.*`)
+- **Prisma**: All data operations (`prisma.modelName.*`)
+- **Never mix them** for database queries!

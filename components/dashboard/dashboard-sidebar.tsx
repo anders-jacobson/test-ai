@@ -5,14 +5,11 @@ import {
   IconCamera,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
   IconFolder,
   IconHelp,
   IconListDetails,
-  IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
@@ -145,9 +142,6 @@ export function DashboardSidebar({ cooperative, user, ...props }: DashboardSideb
     email: user?.email || '',
     avatar: user?.avatar || '',
   };
-
-  // Debug logging
-  console.log('🏢 DashboardSidebar received:', { cooperative, user });
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
