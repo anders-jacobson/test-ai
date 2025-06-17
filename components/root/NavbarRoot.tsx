@@ -7,7 +7,6 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 export default function NavbarRoot() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState<string>('Initializing...');
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -20,19 +19,15 @@ export default function NavbarRoot() {
         } = await supabase.auth.getSession();
 
         if (error) {
-          setDebugInfo(`Error: ${error.message}`);
           setLoggedIn(false);
         } else if (session) {
-          setDebugInfo(`Logged in as: ${session.user.email}`);
           setLoggedIn(true);
         } else {
-          setDebugInfo('No session found');
           setLoggedIn(false);
         }
 
         setIsLoading(false);
-      } catch (err) {
-        setDebugInfo(`Exception: ${err}`);
+      } catch {
         setLoggedIn(false);
         setIsLoading(false);
       }
@@ -45,10 +40,8 @@ export default function NavbarRoot() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        setDebugInfo(`Auth change - Logged in as: ${session.user.email}`);
         setLoggedIn(true);
       } else {
-        setDebugInfo('Auth change - Logged out');
         setLoggedIn(false);
       }
       setIsLoading(false);
@@ -81,11 +74,7 @@ export default function NavbarRoot() {
     <nav className="w-full border-b bg-background">
       <div className="max-w-[1140px] mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo/Brand */}
-        <div className="font-bold text-lg tracking-tight text-primary">
-          LOGO
-          {/* Temporary debug info */}
-          <div className="text-xs text-muted-foreground ml-2 inline">({debugInfo})</div>
-        </div>
+        <div className="font-bold text-lg tracking-tight text-primary">LOGO</div>
         {/* Navigation actions */}
         <div className="flex gap-2">
           {loggedIn ? (
