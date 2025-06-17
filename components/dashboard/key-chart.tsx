@@ -37,10 +37,16 @@ export default function KeyChart({
         <CardTitle>Key status</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px]">
-          <BarChart accessibilityLayer data={data}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+          <BarChart accessibilityLayer data={data} margin={{ left: 12, right: 12 }}>
             <CartesianGrid vertical={false} />
-            <XAxis dataKey="keyType" tickLine={false} tickMargin={10} axisLine={false} />
+            <XAxis
+              dataKey="keyType"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              interval={0}
+            />
             <ChartTooltip
               content={({ active, payload, label }) => {
                 if (active && payload && payload.length && label) {
@@ -74,9 +80,22 @@ export default function KeyChart({
               stackId="a"
               fill="var(--color-Available)"
               radius={[0, 0, 4, 4]}
+              maxBarSize={60}
             />
-            <Bar dataKey="InUse" stackId="a" fill="var(--color-InUse)" radius={[0, 0, 0, 0]} />
-            <Bar dataKey="Lost" stackId="a" fill="var(--color-Lost)" radius={[4, 4, 0, 0]} />
+            <Bar
+              dataKey="InUse"
+              stackId="a"
+              fill="var(--color-InUse)"
+              radius={[0, 0, 0, 0]}
+              maxBarSize={60}
+            />
+            <Bar
+              dataKey="Lost"
+              stackId="a"
+              fill="var(--color-Lost)"
+              radius={[4, 4, 0, 0]}
+              maxBarSize={60}
+            />
           </BarChart>
         </ChartContainer>
       </CardContent>
