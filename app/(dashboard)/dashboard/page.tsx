@@ -1,5 +1,5 @@
-import KeyChart from '@/components/dashboard/key-chart';
-import TotalStatusPieChart from '@/components/dashboard/total-status-pie-chart';
+import KeyChart from '@/components/dashboard/chart-bar';
+import TotalStatusPieChart from '@/components/dashboard/chart-pie';
 import { DataTable } from '@/components/dashboard/data-table';
 import { getKeyStatusSummary, getBorrowedKeysTableData } from '@/app/actions/dashboard';
 import { columns } from '@/components/dashboard/columns';

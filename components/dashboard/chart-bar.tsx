@@ -2,7 +2,7 @@
 import React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -34,7 +34,8 @@ export default function KeyChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Key status</CardTitle>
+        <CardTitle>Status per key type</CardTitle>
+        <CardDescription>Breakdown of key status by type</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
