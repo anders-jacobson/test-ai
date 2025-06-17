@@ -1,33 +1,43 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { type NextRequest, NextResponse } from 'next/server';
+import { updateSession } from '@/utils/supabase/middleware';
 
 const PUBLIC_PATHS = ['/auth', '/api', '/'];
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const { pathname } = req.nextUrl;
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
   // Allow public paths
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
-    return res;
+    const { response } = await updateSession(request);
+    return response;
   }
 
-  // Create Supabase client with proper middleware handling
-  const supabase = createMiddlewareClient({ req, res });
+  // For protected routes, check auth and redirect if needed
+  const { response: supabaseResponse, user } = await updateSession(request);
 
-  // Check Supabase session
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    const loginUrl = new URL('/auth/login', req.url);
-    return NextResponse.redirect(loginUrl);
+  // Check if user is authenticated
+  if (!user) {
+    const loginUrl = new URL('/auth/login', request.url);
+    const redirectResponse = NextResponse.redirect(loginUrl);
+    // Copy over any cookies that were set during session update
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
+    });
+    return redirectResponse;
   }
 
-  return res;
+  return supabaseResponse;
 }
 
 export const config = {
-  matcher: ['/((?!_next|favicon.ico).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };

@@ -1,6 +1,5 @@
 import KeyChart from '@/components/dashboard/key-chart';
 import { DataTable } from '@/components/dashboard/data-table';
-import { SectionCards } from '@/components/dashboard/section-cards';
 import { getKeyStatusSummary, getBorrowedKeysTableData } from '@/app/actions/dashboard';
 import { columns } from '@/components/dashboard/columns';
 

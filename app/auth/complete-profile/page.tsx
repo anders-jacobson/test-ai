@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { updateUser } from '@/app/actions/updateProfile';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 
 export default function CompleteProfilePage() {
   const [cooperative, setCooperative] = useState('');
@@ -13,10 +13,11 @@ export default function CompleteProfilePage() {
   useEffect(() => {
     async function fetchEmail() {
       setFetchingEmail(true);
+      const supabase = createClient();
       const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setEmail(session?.user?.email ?? null);
+        data: { user },
+      } = await supabase.auth.getUser();
+      setEmail(user?.email ?? null);
       setFetchingEmail(false);
     }
     fetchEmail();

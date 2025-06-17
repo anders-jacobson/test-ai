@@ -1,14 +1,14 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/utils/supabase/client';
 
 const IDLE_TIMEOUT = 15 * 60 * 1000; // 15 minutes
 
 export default function useIdleLogout() {
   const timer = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
     const logout = async () => {

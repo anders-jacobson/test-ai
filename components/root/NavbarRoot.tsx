@@ -2,25 +2,26 @@
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/utils/supabase/client';
+import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 export default function NavbarRoot() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
-    // Check initial session
-    const checkSession = async () => {
+    // Check initial user
+    const checkUser = async () => {
       try {
         const {
-          data: { session },
+          data: { user },
           error,
-        } = await supabase.auth.getSession();
+        } = await supabase.auth.getUser();
 
         if (error) {
           setLoggedIn(false);
-        } else if (session) {
+        } else if (user) {
           setLoggedIn(true);
         } else {
           setLoggedIn(false);
@@ -33,12 +34,12 @@ export default function NavbarRoot() {
       }
     };
 
-    checkSession();
+    checkUser();
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       if (session) {
         setLoggedIn(true);
       } else {

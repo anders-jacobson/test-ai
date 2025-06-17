@@ -1,21 +1,20 @@
 'use server';
 import { prisma } from '@/lib/prisma';
-import { cookies } from 'next/headers';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/utils/supabase/server';
 
 // Server-side: Get the current user's User.id from Supabase Auth session (for Server Actions)
 async function getCurrentUserId() {
-  const supabase = createServerActionClient({ cookies });
+  const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session?.user?.email) throw new Error('Not authenticated');
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) throw new Error('Not authenticated');
+  const userRecord = await prisma.user.findUnique({
+    where: { email: user.email },
     select: { id: true },
   });
-  if (!user) throw new Error('User not found');
-  return user.id;
+  if (!userRecord) throw new Error('User not found');
+  return userRecord.id;
 }
 
 export async function getKeyStatusSummary() {
