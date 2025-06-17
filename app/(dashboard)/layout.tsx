@@ -1,5 +1,6 @@
 import React from 'react';
 import { createClient } from '@/utils/supabase/server';
+import { prisma } from '@/lib/prisma';
 import { DashboardSidebar } from '@/components/dashboard/dashboard-sidebar';
 import { SiteHeader } from '@/components/dashboard/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -19,23 +20,35 @@ async function Layout({ children }: { children: React.ReactNode }) {
 
   if (authUser) {
     console.log('🔍 Auth user ID:', authUser.id);
-    const { data: profile, error } = await supabase
-      .from('User')
-      .select('cooperative, name, email')
-      .eq('id', authUser.id)
-      .single();
+    console.log('🔍 Auth user email:', authUser.email);
 
-    console.log('📊 Profile query result:', { profile, error });
+    try {
+      // Use Prisma to find user by email (matching dashboard actions pattern)
+      const profile = await prisma.user.findUnique({
+        where: { email: authUser.email! },
+        select: {
+          cooperative: true,
+          name: true,
+          email: true,
+        },
+      });
 
-    if (profile) {
-      cooperative = profile.cooperative;
-      user = {
-        name: profile.name || '',
-        email: profile.email,
-      };
-      console.log('✅ Set cooperative to:', cooperative);
-    } else {
-      console.log('❌ No profile found');
+      console.log('📊 Prisma profile query result:', profile);
+
+      if (profile) {
+        cooperative = profile.cooperative;
+        user = {
+          name: profile.name || '',
+          email: profile.email,
+        };
+        console.log('✅ Set cooperative to:', cooperative);
+        console.log('✅ Set user to:', user);
+      } else {
+        console.log('❌ No profile found in Prisma User table');
+        console.log('🔍 This user may need to complete registration');
+      }
+    } catch (error) {
+      console.log('❌ Prisma query error:', error);
     }
   } else {
     console.log('❌ No authenticated user');
