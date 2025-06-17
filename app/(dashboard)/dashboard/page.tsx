@@ -17,7 +17,9 @@ export default async function Page() {
               <KeyChart data={keyChartData} />
             </div>
           </div>
-          <DataTable columns={columns} data={borrowedKeysData} />
+          <div className="px-4 lg:px-6">
+            <DataTable columns={columns} data={borrowedKeysData} />
+          </div>
         </div>
       </div>
     </div>
