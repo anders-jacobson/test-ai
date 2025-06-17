@@ -1,6 +1,6 @@
 'use client';
 
-import { PlusCircle, Mail } from 'lucide-react';
+import { IconPlus, IconMail } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ export function NavMain({
               tooltip="Quick Create"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
             >
-              <PlusCircle />
+              <IconPlus />
               <span>Quick Create</span>
             </SidebarMenuButton>
             <Button
@@ -38,7 +38,7 @@ export function NavMain({
               className="size-8 group-data-[collapsible=icon]:opacity-0"
               variant="outline"
             >
-              <Mail />
+              <IconMail />
               <span className="sr-only">Inbox</span>
             </Button>
           </SidebarMenuItem>

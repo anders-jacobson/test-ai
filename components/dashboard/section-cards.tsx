@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingUp } from 'lucide-react';
+import { TrendingDown, TrendingUp } from '@tabler/icons-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
