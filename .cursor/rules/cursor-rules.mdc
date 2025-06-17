@@ -8,63 +8,156 @@ description: How to add or edit Cursor rules in our project
 globs: 
 alwaysApply: false
 ---
-# Cursor Rules Location
+# Cursor Rules & Development Standards
 
-How to add new cursor rules to the project
+## Critical Development Rules
 
-1. Always place rule files in PROJECT_ROOT/.cursor/rules/:
-    ```
-    .cursor/rules/
-    ├── your-rule-name.mdc
-    ├── another-rule.mdc
-    └── ...
-    ```
+### 🚨 MANDATORY UI Component Usage
+- **NEVER use plain HTML elements** (`<button>`, `<input>`, `<table>`, etc.)
+- **ALWAYS use shadcn/ui components** from `@/components/ui/`
+- **ONLY use Tabler Icons** from `@tabler/icons-react`
+- **ALWAYS wrap content in Card components** for proper layout
+- See `ui-component-standards.mdc` for complete usage guide
 
-2. Follow the naming convention:
-    - Use kebab-case for filenames
-    - Always use .mdc extension
-    - Make names descriptive of the rule's purpose
+### 🔧 Technology Stack Requirements
+- **Next.js 15** with App Router (server components by default)
+- **React 19** with TypeScript (strict mode)
+- **Tailwind CSS v4** with `@theme` directive in CSS
+- **Prisma** with Supabase for database operations
+- **Server Actions** for form submissions and mutations
 
-3. Directory structure:
-    ```
-    PROJECT_ROOT/
-    ├── .cursor/
-    │   └── rules/
-    │       ├── your-rule-name.mdc
-    │       └── ...
-    └── ...
-    ```
+## Rule File Management
 
-4. Never place rule files:
-    - In the project root
-    - In subdirectories outside .cursor/rules
-    - In any other location
+### 1. Always place rule files in PROJECT_ROOT/.cursor/rules/:
+```
+.cursor/rules/
+├── cursor-rules.mdc                 # This file (overview)
+├── ui-component-standards.mdc       # 🚨 MANDATORY UI standards
+├── coding-standards.mdc             # Development patterns
+├── tech-stack.mdc                   # Technology specifications
+├── project-context.mdc              # Application context
+├── database-schema.mdc              # Database patterns
+└── task-list.mdc                    # Task management
+```
 
-5. Cursor rules have the following structure:
+### 2. Follow the naming convention:
+- Use kebab-case for filenames
+- Always use .mdc extension
+- Make names descriptive of the rule's purpose
+
+### 3. Directory structure:
+```
+PROJECT_ROOT/
+├── .cursor/
+│   └── rules/
+│       ├── your-rule-name.mdc
+│       └── ...
+└── ...
+```
+
+### 4. Never place rule files:
+- In the project root
+- In subdirectories outside .cursor/rules
+- In any other location
+
+## Rule File Structure
+
+### 5. Cursor rules have the following structure:
 
 ````
 ---
 description: Short description of the rule's purpose
 globs: optional/path/pattern/**/* 
-alwaysApply: false
+alwaysApply: true  # For mandatory standards
 ---
 # Rule Title
 
 Main content explaining the rule with markdown formatting.
 
+## Critical Guidelines
 1. Step-by-step instructions
-2. Code examples
-3. Guidelines
+2. Code examples with ✅ CORRECT and ❌ WRONG patterns
+3. Mandatory usage requirements
 
-Example:
+### Example Code Blocks:
 ```typescript
-// Good example
-function goodExample() {
-  // Implementation following guidelines
-}
+// ✅ CORRECT - Always use shadcn/ui components
+import { Button } from '@/components/ui/button';
+import { IconPlus } from '@tabler/icons-react';
 
-// Bad example
-function badExample() {
-  // Implementation not following guidelines
-}
-```````
+<Button className="gap-1">
+  <IconPlus className="h-3.5 w-3.5" />
+  Add Item
+</Button>
+
+// ❌ WRONG - Never use plain HTML
+<button>Add Item</button>
+```
+````
+
+## Development Workflow
+
+### Before Writing Any Code:
+1. **Check ui-component-standards.mdc** for mandatory component usage
+2. **Review coding-standards.mdc** for patterns and structure
+3. **Verify tech-stack.mdc** for correct imports and dependencies
+4. **Use ONLY shadcn/ui components and Tabler Icons**
+
+### Component Development Checklist:
+- [ ] Uses shadcn/ui components exclusively
+- [ ] Imports icons from `@tabler/icons-react` only
+- [ ] Follows Next.js 15 App Router patterns
+- [ ] Uses Tailwind CSS v4 classes properly
+- [ ] Implements proper TypeScript typing
+- [ ] Includes proper error handling
+- [ ] Uses Server Actions for mutations
+
+### Icon Usage Quick Reference:
+```typescript
+// Standard imports
+import { 
+  IconPlus,      // Add actions
+  IconTrash,     // Delete actions  
+  IconEdit,      // Edit actions
+  IconFilter,    // Filter/search
+  IconDots,      // More options menu
+  IconHome,      // Navigation
+  IconUser,      // User-related
+  IconLoader     // Loading states
+} from '@tabler/icons-react';
+
+// Standard sizing
+<Icon className="h-4 w-4" />        // Standard
+<Icon className="h-3.5 w-3.5" />    // In buttons
+<Icon className="h-5 w-5" />        // Large
+```
+
+### Button Usage Quick Reference:
+```typescript
+import { Button } from '@/components/ui/button';
+
+<Button>Primary Action</Button>                    // Default primary
+<Button variant="outline">Secondary</Button>       // Secondary action
+<Button variant="destructive">Delete</Button>      // Danger action
+<Button variant="ghost">Subtle</Button>            // Subtle action
+<Button size="icon"><IconEdit /></Button>          // Icon only
+```
+
+## Rule Priorities
+
+### 1. **CRITICAL** - ui-component-standards.mdc
+Must be followed without exception. Never use plain HTML elements.
+
+### 2. **ESSENTIAL** - coding-standards.mdc  
+Core development patterns for Next.js 15 + App Router.
+
+### 3. **IMPORTANT** - tech-stack.mdc
+Technology choices and dependency management.
+
+### 4. **CONTEXTUAL** - project-context.mdc, database-schema.mdc
+Application-specific guidelines and patterns.
+
+### 5. **WORKFLOW** - task-list.mdc
+Project management and task tracking.
+
+Remember: The goal is consistent, maintainable, and accessible code using modern React patterns with shadcn/ui components and Tabler Icons exclusively.

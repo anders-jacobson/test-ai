@@ -1,12 +1,16 @@
 # Modern Cursor Rules Setup (.mdc format)
 
+**UPDATED FOR CURRENT SETUP**: Next.js 15 + Tailwind CSS v4 + Tabler Icons + shadcn/ui
+
 Create these files in `.cursor/rules/` directory:
 
 ## 1. `.cursor/rules/project-context.mdc`
+
 ```mdc
 ---
-type: always
 description: Core context for Swedish housing cooperative key management app
+globs:
+alwaysApply: true
 ---
 
 # Key Management App Context
@@ -14,18 +18,19 @@ description: Core context for Swedish housing cooperative key management app
 This is a Swedish housing cooperative key management app for nyckelansvariga (key managers) in bostadsrättsföreningar.
 
 ## Key Requirements
-- Mobile-first web app using React + TypeScript + Supabase
+- Mobile-first web app using Next.js 15 + React 19 + TypeScript + Supabase
 - Track physical keys, borrowers, and lending records
 - Swedish context: pensioner-friendly UI, GDPR compliance
-- Authentication: Email + Google OAuth
-- UI: Tailwind CSS + shadcn/ui components
+- Authentication: Email + Google OAuth via Supabase Auth
+- UI: Tailwind CSS v4 + shadcn/ui components (MANDATORY)
+- Icons: Tabler Icons ONLY (@tabler/icons-react)
 
 ## Core Features
-1. Key lending/return workflow
+1. Key lending/return workflow with server actions
 2. Dashboard with stacked bar charts (recharts)
-3. Key inventory management
+3. Key inventory management with Prisma ORM
 4. Borrower tracking (separate table)
-5. Mobile-responsive design
+5. Mobile-responsive design with App Router
 
 ## Swedish Terms
 - nyckelansvarig = key manager
@@ -37,353 +42,552 @@ This is a Swedish housing cooperative key management app for nyckelansvariga (ke
 - EU data storage (GDPR compliance)
 - Mobile-first responsive design
 - Online-only (no offline capability)
+- Server-side rendering for better performance
+
+## Supabase Configuration
+- **Organization**: test-ai-build (pxskhfvbsxtaaulctibz)
+- **Project**: anders.ebrev@gmail.com's Project (fxrmufcdhibqojyodrdu)
+- **Region**: EU North (Stockholm) - GDPR compliant
+- **Database**: PostgreSQL 17.4
 
 Reference: @PRD.md for complete requirements
 ```
 
 ## 2. `.cursor/rules/tech-stack.mdc`
-```mdc
+
+````mdc
 ---
-type: always
-description: Technology stack and dependencies for the key management app
+description: Technology stack and dependencies - CURRENT SETUP
+globs:
+alwaysApply: true
 ---
 
-# Technology Stack
+# Technology Stack - CURRENT SETUP
 
 ## Frontend Stack
-- **React 18** with TypeScript (strict mode)
-- **Vite** for build tooling
-- **Tailwind CSS** (core utilities only - no custom compiler)
-- **shadcn/ui** for components
-- **Recharts** for stacked bar charts
-- **Lucide React** for icons
+- **Next.js 15** with TypeScript (strict mode) and App Router
+- **React 19** with server components by default
+- **Tailwind CSS v4** with @theme directive configuration
+- **shadcn/ui** for ALL UI components (MANDATORY)
+- **Tabler Icons** (@tabler/icons-react) for ALL icons (MANDATORY)
+- **Recharts** for stacked bar charts and data visualization
+- **TanStack Table** for data tables
 
 ## Backend & Database
 - **Supabase** (PostgreSQL + Auth + Real-time)
+- **Prisma** as ORM for type-safe database operations
 - **Row Level Security (RLS)** for data isolation
 - **EU servers** for GDPR compliance
 
-## Key Dependencies
+## Key Dependencies - ACTUAL VERSIONS
 ```json
 {
   "dependencies": {
-    "react": "^18.0.0",
-    "@supabase/supabase-js": "^2.0.0",
-    "recharts": "^2.0.0",
-    "lucide-react": "^0.263.1",
-    "tailwindcss": "^3.0.0"
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@prisma/client": "^6.9.0",
+    "prisma": "^6.9.0",
+    "@tabler/icons-react": "^3.34.0",
+    "@tanstack/react-table": "^8.21.3",
+    "recharts": "^2.15.3",
+    "tailwindcss": "^4",
+    "@shadcn/ui": "^0.0.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
   }
 }
-```
+````
 
 ## Architecture Patterns
-- Functional components with hooks
-- Custom hooks for Supabase operations
-- Context for authentication state
-- Mobile-first responsive design
-- TypeScript for all files
 
-## File Structure
+- **Next.js 15 App Router** with server components by default
+- **Client components** for interactive features only
+- **Custom hooks** for Supabase + Prisma operations
+- **Server actions** for data mutations
+- **Middleware** for authentication
+- **Mobile-first responsive design**
+- **TypeScript** for all files
+
+## MANDATORY Component Usage
+
+- NEVER use plain HTML elements
+- ALWAYS use shadcn/ui components
+- ONLY use Tabler Icons from @tabler/icons-react
+- See ui-component-standards.mdc for complete guide
+
+## File Structure (Next.js 15 App Router)
+
 ```
-src/
-├── components/     # Reusable UI components
-├── pages/         # Route components
-├── hooks/         # Custom hooks for data
-├── utils/         # Helper functions
-├── types/         # TypeScript definitions
-└── api/           # Supabase client setup
-```
+├── app/                    # App Router directory
+│   ├── globals.css        # Global styles + Tailwind v4 @theme
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   ├── (dashboard)/       # Route groups
+│   ├── (root)/           # Route groups
+│   ├── actions/          # Server actions
+│   ├── api/              # API routes
+│   └── auth/             # Authentication routes
+├── components/           # Reusable UI components
+│   ├── ui/              # shadcn/ui components (mandatory)
+│   ├── dashboard/       # Feature-specific components
+│   └── root/            # Root layout components
+├── lib/                 # Utility functions
+├── hooks/               # Custom hooks
+├── prisma/              # Prisma schema and migrations
+└── middleware.ts        # Next.js middleware for auth
 ```
 
-## 3. `.cursor/rules/database-schema.mdc`
+````
+
+## 3. `.cursor/rules/ui-component-standards.mdc`
 ```mdc
 ---
-type: auto_attached
-patterns: ["**/*supabase*", "**/*database*", "**/*schema*", "**/*migration*"]
-description: Database schema and Supabase operations for key management
+description: MANDATORY UI component usage - shadcn/ui and Tabler Icons only
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: true
 ---
 
-# Database Schema
+# UI Component Standards - MANDATORY
+
+## 🚨 CRITICAL RULE: NEVER USE PLAIN HTML ELEMENTS
+
+### ❌ FORBIDDEN
+```typescript
+<button>Click me</button>      // NEVER
+<input type="text" />          // NEVER
+<table>...</table>             // NEVER
+<select>...</select>           // NEVER
+````
+
+### ✅ REQUIRED
+
+```typescript
+// ALWAYS use shadcn/ui components
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+
+<Button>Click me</Button>
+<Input />
+<Table>...</Table>
+<Select>...</Select>
+```
+
+## Icon Library - ONLY Tabler Icons
+
+### ❌ FORBIDDEN Icon Libraries
+
+```typescript
+import { Plus } from 'lucide-react'; // ❌ NO
+import { FaPlus } from 'react-icons/fa'; // ❌ NO
+```
+
+### ✅ REQUIRED - Tabler Icons Only
+
+```typescript
+import { IconPlus, IconTrash, IconEdit, IconFilter } from '@tabler/icons-react';
+
+<IconPlus className="h-4 w-4" />
+<Button className="gap-1">
+  <IconPlus className="h-3.5 w-3.5" />
+  Add Item
+</Button>
+```
+
+## Complete Component Usage Guide
+
+See full ui-component-standards.mdc for detailed patterns.
+
+````
+
+## 4. `.cursor/rules/database-schema.mdc`
+```mdc
+---
+description: Database schema and Prisma operations for key management
+globs: ["**/*prisma*", "**/*database*", "**/*schema*"]
+alwaysApply: false
+---
+
+# Database Schema - Prisma + Supabase
 
 ## Core Tables
 
-### key_types
-```sql
-CREATE TABLE key_types (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  access_area TEXT,
-  total_copies INTEGER DEFAULT 0,
-  cooperative_id UUID REFERENCES profiles(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+### key_types (Prisma Model: KeyType)
+```prisma
+model KeyType {
+  id            String     @id @default(cuid())
+  name          String
+  accessArea    String?
+  totalCopies   Int        @default(0)
+  cooperativeId String
+  createdAt     DateTime   @default(now())
+  keyCopies     KeyCopy[]
+
+  @@map("key_types")
+}
+````
+
+### key_copies (Prisma Model: KeyCopy)
+
+```prisma
+model KeyCopy {
+  id           String          @id @default(cuid())
+  keyTypeId    String
+  copyNumber   Int
+  status       KeyCopyStatus   @default(AVAILABLE)
+  createdAt    DateTime        @default(now())
+  keyType      KeyType         @relation(fields: [keyTypeId], references: [id], onDelete: Cascade)
+  lendingRecords LendingRecord[]
+
+  @@unique([keyTypeId, copyNumber])
+  @@map("key_copies")
+}
+
+enum KeyCopyStatus {
+  AVAILABLE
+  OUT
+  LOST
+}
 ```
 
-### key_copies
-```sql
-CREATE TABLE key_copies (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  key_type_id UUID REFERENCES key_types(id) ON DELETE CASCADE,
-  copy_number INTEGER NOT NULL,
-  status VARCHAR(20) DEFAULT 'available', -- available, out, lost
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(key_type_id, copy_number)
-);
+### borrowers (Prisma Model: Borrower)
+
+```prisma
+model Borrower {
+  id            String          @id @default(cuid())
+  name          String
+  email         String?
+  phone         String?
+  company       String?
+  cooperativeId String
+  createdAt     DateTime        @default(now())
+  lendingRecords LendingRecord[]
+
+  @@map("borrowers")
+}
 ```
 
-### borrowers
-```sql
-CREATE TABLE borrowers (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  email VARCHAR(255),
-  phone VARCHAR(20),
-  company VARCHAR(100),
-  cooperative_id UUID REFERENCES profiles(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+### lending_records (Prisma Model: LendingRecord)
+
+```prisma
+model LendingRecord {
+  id            String    @id @default(cuid())
+  keyCopyId     String
+  borrowerId    String
+  lentDate      DateTime  @default(now())
+  endDate       DateTime?
+  notes         String?
+  idChecked     Boolean   @default(false)
+  returnedDate  DateTime?
+  cooperativeId String
+  createdAt     DateTime  @default(now())
+  keyCopy       KeyCopy   @relation(fields: [keyCopyId], references: [id], onDelete: Cascade)
+  borrower      Borrower  @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
+
+  @@map("lending_records")
+}
 ```
 
-### lending_records
-```sql
-CREATE TABLE lending_records (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  key_copy_id UUID REFERENCES key_copies(id) ON DELETE CASCADE,
-  borrower_id UUID REFERENCES borrowers(id) ON DELETE CASCADE,
-  lent_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  end_date DATE,
-  notes TEXT,
-  id_checked BOOLEAN DEFAULT FALSE,
-  returned_date DATE,
-  cooperative_id UUID REFERENCES profiles(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
+## TypeScript Types (Generated by Prisma)
 
-## TypeScript Types
 ```typescript
-export interface KeyType {
-  id: string;
-  name: string;
-  access_area: string;
-  total_copies: number;
-  cooperative_id: string;
-  created_at: string;
-}
+import { KeyType, KeyCopy, Borrower, LendingRecord, KeyCopyStatus } from '@prisma/client';
 
-export interface KeyCopy {
-  id: string;
-  key_type_id: string;
-  copy_number: number;
-  status: 'available' | 'out' | 'lost';
-  created_at: string;
-}
+// Extended types with relations
+type KeyTypeWithCopies = KeyType & {
+  keyCopies: KeyCopy[];
+};
 
-export interface Borrower {
-  id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-  cooperative_id: string;
-  created_at: string;
-}
-
-export interface LendingRecord {
-  id: string;
-  key_copy_id: string;
-  borrower_id: string;
-  lent_date: string;
-  end_date?: string;
-  notes?: string;
-  id_checked: boolean;
-  returned_date?: string;
-  cooperative_id: string;
-  created_at: string;
-}
+type LendingRecordWithRelations = LendingRecord & {
+  keyCopy: KeyCopy & { keyType: KeyType };
+  borrower: Borrower;
+};
 ```
 
-## Custom Hook Patterns
+## Prisma Client Usage
+
 ```typescript
-export function useKeyTypes() {
-  const [data, setData] = useState<KeyType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Always include proper error handling and loading states
-}
-```
+import { prisma } from '@/lib/prisma';
+
+// Always include relations for dashboard data
+const keyTypesWithCopies = await prisma.keyType.findMany({
+  where: { cooperativeId },
+  include: {
+    keyCopies: true,
+  },
+});
+
+// Transaction for creating key type with copies
+const result = await prisma.$transaction(async (tx) => {
+  const keyType = await tx.keyType.create({ data: keyTypeData });
+
+  if (totalCopies > 0) {
+    const copies = Array.from({ length: totalCopies }, (_, i) => ({
+      keyTypeId: keyType.id,
+      copyNumber: i + 1,
+      status: 'AVAILABLE' as const,
+    }));
+
+    await tx.keyCopy.createMany({ data: copies });
+  }
+
+  return keyType;
+});
 ```
 
-## 4. `.cursor/rules/coding-standards.mdc`
+````
+
+## 5. `.cursor/rules/coding-standards.mdc`
 ```mdc
 ---
-type: auto_attached
-patterns: ["**/*.tsx", "**/*.ts"]
-description: Coding standards and patterns for React components and TypeScript
+description: Development patterns for Next.js 15 + shadcn/ui + Tabler Icons
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: true
 ---
 
-# Coding Standards
+# Coding Standards - UPDATED FOR CURRENT SETUP
 
-## File Naming Conventions
-- Components: PascalCase (`KeyDashboard.tsx`)
-- Hooks: camelCase with 'use' prefix (`useKeyTypes.ts`)
-- Utils: camelCase (`formatDate.ts`)
-- Types: PascalCase (`KeyType.ts`)
+## MANDATORY Component Usage (Critical)
 
-## Component Structure
+### ❌ NEVER Use Plain HTML
 ```typescript
-interface ComponentProps {
-  /** JSDoc comment for each prop */
-  keyId: string;
-  onUpdate?: (key: KeyType) => void;
+<button onClick={handleClick}>Click</button>   // FORBIDDEN
+<input type="text" />                          // FORBIDDEN
+<table><tr><td>Data</td></tr></table>         // FORBIDDEN
+````
+
+### ✅ ALWAYS Use shadcn/ui + Tabler Icons
+
+```typescript
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
+
+<Button onClick={handleClick} className="gap-1">
+  <IconPlus className="h-3.5 w-3.5" />
+  Click me
+</Button>
+<Input />
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell>Data</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  </CardContent>
+</Card>
+```
+
+## Server Component Structure (Next.js 15)
+
+```typescript
+import { prisma } from '@/lib/prisma';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface PageProps {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function ComponentName({ keyId, onUpdate }: ComponentProps) {
-  // 1. Hooks first
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  // 2. Event handlers
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    // Implementation with proper error handling
-  };
-  
-  // 3. Effects
-  useEffect(() => {
-    // Side effects
-  }, []);
-  
-  // 4. Render
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  
+export default async function ServerPage({ params, searchParams }: PageProps) {
+  const data = await prisma.keyType.findMany({
+    where: { cooperativeId: params.id },
+    include: { keyCopies: true }
+  });
+
   return (
-    <div className="mobile-first-tailwind-classes">
-      {/* JSX content */}
+    <div className="container mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Key Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <KeyDashboard data={data} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
 ```
 
-## Error Handling Pattern
+## Client Component Structure
+
 ```typescript
-try {
-  const { data, error } = await supabase
-    .from('table_name')
-    .select('*');
-    
-  if (error) throw error;
-  
-  // Success handling
-} catch (error) {
-  console.error('Operation failed:', error);
-  setError(error instanceof Error ? error.message : 'Unknown error');
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IconPlus, IconLoader } from '@tabler/icons-react';
+
+interface Props {
+  data: KeyType[];
+  onUpdate?: (data: KeyType) => void;
+}
+
+export default function ClientComponent({ data, onUpdate }: Props) {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (formData: FormData) => {
+    setLoading(true);
+    try {
+      const result = await createKeyType(formData);
+      if (result.success) {
+        onUpdate?.(result.data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2">
+        <IconLoader className="h-4 w-4 animate-spin" />
+        Loading...
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Add Key Type</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form action={handleSubmit} className="space-y-4">
+          <Input placeholder="Key name..." name="name" required />
+          <Button type="submit" className="gap-1">
+            <IconPlus className="h-3.5 w-3.5" />
+            Add Key Type
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }
 ```
 
-## Tailwind CSS Guidelines
-- Mobile-first approach: `class="text-sm md:text-base lg:text-lg"`
-- Use core utilities only (no custom compiler)
-- Responsive design: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
-- shadcn/ui components when available
+## Tailwind CSS v4 Configuration
 
-## TypeScript Rules
-- Strict mode enabled
-- Explicit return types for functions
-- Proper interface definitions
-- No `any` types
-- Use proper generic constraints
+### CSS Configuration (app/globals.css)
 
-## Form Handling
-```typescript
-const [formData, setFormData] = useState({
-  name: '',
-  email: '',
-  phone: ''
-});
+```css
+@import 'tailwindcss';
 
-const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setFormData(prev => ({ ...prev, [name]: value }));
+@theme {
+  --radius: 0.65rem;
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  /* All theme configuration here */
+}
+```
+
+### JavaScript Config (tailwind.config.js)
+
+```javascript
+import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
+
+const config = {
+  plugins: [forms, typography], // Only plugins
 };
-```
-```
 
-## 5. `.cursor/rules/key-features.mdc`
-```mdc
----
-type: manual
-description: Implement specific key management features based on PRD requirements
----
-
-# Key Management Features
-
-## Dashboard Component Requirements
-Create a dashboard showing:
-- Stacked bar chart for each key type (available/out/lost) using recharts
-- Sortable table of all key copies with current status
-- Overview statistics
-- Mobile-responsive layout
-
-## Lending Workflow
-1. Select key type and copy number
-2. Capture borrower info: name, email, phone, company (optional), notes (optional)
-3. Set optional end date with reminder
-4. Checkbox for ID verification
-5. Auto-timestamp the transaction
-6. Update key status to "out"
-
-## Return Workflow  
-1. Search for borrowed keys
-2. Select key to return
-3. Mark as returned (clears lending record)
-4. Key becomes available again
-5. Keep borrower record for future use
-
-## Data Validation Rules
-- Name: Required, min 2 characters
-- Email: Valid email format if provided
-- Phone: Valid phone format if provided
-- End date: Must be future date if set
-- Key copy: Must be available to lend
-
-## Mobile-First UI Requirements
-- Touch-friendly buttons (min 44px)
-- Easy form navigation
-- Readable text sizes
-- Swipe gestures for tables
-- Bottom navigation for key actions
-
-Reference the complete PRD: @PRD.md
+export default config;
 ```
 
-## How to Set This Up:
+## Data Table Pattern (TanStack Table + shadcn/ui)
 
-1. **Create the directory structure:**
-```bash
-mkdir -p .cursor/rules
+```typescript
+'use client';
+
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { IconFilter, IconPlus } from '@tabler/icons-react';
+
+export function DataTable({ columns, data }) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Input placeholder="Filter..." className="max-w-xs" />
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-1">
+                <IconFilter className="h-3.5 w-3.5" />
+                Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {/* Filter options */}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button className="gap-1">
+            <IconPlus className="h-3.5 w-3.5" />
+            Add Item
+          </Button>
+        </div>
+      </div>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
 ```
 
-2. **Create each `.mdc` file** with the content above
-
-3. **Use the new system:**
-```bash
-# This will automatically include project context
-Cursor will read the rules automatically
-
-# Manually invoke specific rules  
-@key-features implement the dashboard component
-
-# Auto-attached rules trigger when editing relevant files
-# (e.g., database-schema.mdc when editing Supabase files)
 ```
 
-## Key Benefits:
-- **Automatic context** - No more `@filename` needed
-- **Smart triggering** - Rules activate based on what you're working on  
-- **Version controlled** - Rules are part of your codebase
-- **Team sharing** - Rules travel with your project
-
-This is much more powerful than the old `.cursorrules` system!
+This updated configuration reflects your actual current setup with Next.js 15, React 19, Tailwind CSS v4, shadcn/ui, and Tabler Icons.
+```
