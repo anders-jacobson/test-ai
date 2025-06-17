@@ -1,97 +1,356 @@
 import { prisma } from '../lib/prisma';
 import { KeyStatus } from '@prisma/client';
 
+// Swedish names for realistic data
+const SWEDISH_NAMES = [
+  'Erik Andersson',
+  'Anna Johansson',
+  'Lars Karlsson',
+  'Maria Nilsson',
+  'Nils Eriksson',
+  'Karin Larsson',
+  'Johan Olsson',
+  'Astrid Persson',
+  'Gustav Svensson',
+  'Ingrid Gustafsson',
+  'Björn Pettersson',
+  'Margareta Jonsson',
+  'Carl Lindberg',
+  'Elisabet Hansson',
+  'Magnus Jansson',
+  'Agneta Bengtsson',
+  'Per Mattsson',
+  'Birgitta Fredriksson',
+  'Ulf Henriksson',
+  'Gunilla Sandberg',
+  'Leif Forsberg',
+  'Eva Lundin',
+  'Sven Holm',
+  'Inger Lindström',
+  'Rolf Sjöberg',
+  'Barbro Östlund',
+  'Kent Blomqvist',
+  'Britt Lundqvist',
+  'Torbjörn Engström',
+  'Gunvor Danielsson',
+  'Bengt Håkansson',
+  'Gunnel Martinsson',
+  'Tommy Sköld',
+  'Monica Samuelsson',
+  'Kjell Holmberg',
+  'Anita Axelsson',
+  'Hans Nordström',
+  'Ulla Viklund',
+  'Stefan Lindqvist',
+  'Margaretha Berg',
+  'Christer Sundström',
+  'Gun Hedström',
+  'Göran Fransson',
+  'Yvonne Strand',
+  'Mats Eklund',
+  'Sonja Nyström',
+  'Lennart Wallin',
+  'Maj-Britt Lund',
+  'Bo Borg',
+  'Gunhild Åberg',
+  'Arne Holmgren',
+  'Britta Lindahl',
+];
+
+const PHONE_PREFIXES = ['070', '072', '073', '076', '079'];
+const EMAIL_DOMAINS = ['gmail.com', 'hotmail.com', 'telia.com', 'bredband.net', 'outlook.com'];
+
+function generateSwedishPhone(): string {
+  const prefix = PHONE_PREFIXES[Math.floor(Math.random() * PHONE_PREFIXES.length)];
+  const suffix = Math.floor(Math.random() * 10000000)
+    .toString()
+    .padStart(7, '0');
+  return `${prefix}-${suffix.slice(0, 3)} ${suffix.slice(3)}`;
+}
+
+function generateEmail(name: string): string {
+  const domain = EMAIL_DOMAINS[Math.floor(Math.random() * EMAIL_DOMAINS.length)];
+  const emailName = name
+    .toLowerCase()
+    .replace(/\s+/g, '.')
+    .replace(/å/g, 'a')
+    .replace(/ä/g, 'a')
+    .replace(/ö/g, 'o')
+    .replace(/[^a-z.]/g, '');
+  return `${emailName}@${domain}`;
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 async function main() {
-  const userId = '106d02e9-30c4-42dd-8dbd-bec6164c5ffa';
+  console.log('🧹 Cleaning existing key data...');
+  // Clean up existing key data in correct order (but keep users!)
+  await prisma.lendingRecord.deleteMany({});
+  await prisma.keyCopy.deleteMany({});
+  await prisma.borrower.deleteMany({});
+  await prisma.keyType.deleteMany({});
 
-  // 1. Create KeyTypes
-  const keyType1 = await prisma.keyType.create({
-    data: {
-      label: 'Main Entrance',
-      function: 'Lobby Access',
-      accessArea: 'Lobby',
-      userId: userId,
+  console.log('👤 Finding specific user...');
+  // Use the specific user ID
+  const userId = '14e65e43-1e29-4ac4-adcf-41e9ddf4db99';
+  const existingUser = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!existingUser) {
+    throw new Error(`User with ID ${userId} not found! Please make sure this user exists.`);
+  }
+
+  console.log(`Using specific user: ${existingUser.name || existingUser.email} (${userId})`);
+
+  console.log('🗝️ Creating key types...');
+  // Create key types as specified
+  const keyTypes = [
+    {
+      label: 'C',
+      function: 'Fastighetsskötare',
+      accessArea: 'Trapphus, Källare, Tvättstuga, Soprum, Cykelrum, Förråd',
+      copies: 10,
     },
-  });
-
-  const keyType2 = await prisma.keyType.create({
-    data: {
-      label: 'Server Room',
-      function: 'IT Department Access',
-      accessArea: 'IT Department',
-      userId: userId,
+    {
+      label: 'E',
+      function: 'Sophämtning',
+      accessArea: 'Soprum',
+      copies: 5,
     },
-  });
-
-  // 2. Create KeyCopies
-  await prisma.keyCopy.createMany({
-    data: [
-      { keyTypeId: keyType1.id, copyNumber: 1, status: KeyStatus.AVAILABLE },
-      { keyTypeId: keyType1.id, copyNumber: 2, status: KeyStatus.OUT },
-      { keyTypeId: keyType1.id, copyNumber: 3, status: KeyStatus.LOST },
-      { keyTypeId: keyType2.id, copyNumber: 1, status: KeyStatus.AVAILABLE },
-      { keyTypeId: keyType2.id, copyNumber: 2, status: KeyStatus.AVAILABLE },
-    ],
-  });
-
-  // 3. Create Borrowers (only if they have keys)
-  const borrower1 = await prisma.borrower.create({
-    data: {
-      name: 'Alice Smith',
-      email: 'alice@example.com',
-      phone: '123-456-7890',
-      company: 'Acme Corp',
-      userId: userId,
+    {
+      label: 'G',
+      function: 'Husmorsnyckel',
+      accessArea: 'Källare, Tvättstuga',
+      copies: 35,
     },
-  });
-
-  const borrower2 = await prisma.borrower.create({
-    data: {
-      name: 'Bob Johnson',
-      email: 'bob@example.com',
-      phone: '987-654-3210',
-      company: 'Beta LLC',
-      userId: userId,
+    {
+      label: 'L',
+      function: 'Tvättstuga',
+      accessArea: 'Tvättstuga',
+      copies: 15,
     },
-  });
+    {
+      label: 'M',
+      function: 'Förråd Gökärtsvägen',
+      accessArea: 'Förråd Gök',
+      copies: 20,
+    },
+    {
+      label: 'N',
+      function: 'Förråd Pilvägen',
+      accessArea: 'Förråd Pil',
+      copies: 10,
+    },
+  ];
 
-  // 4. Create LendingRecords
-  const keyCopy2 = await prisma.keyCopy.findFirst({
-    where: { keyTypeId: keyType1.id, copyNumber: 2 },
-  });
-  const keyCopy4 = await prisma.keyCopy.findFirst({
-    where: { keyTypeId: keyType2.id, copyNumber: 1 },
-  });
-
-  if (keyCopy2 && keyCopy4) {
-    await prisma.lendingRecord.create({
+  const createdKeyTypes = [];
+  for (const keyType of keyTypes) {
+    const created = await prisma.keyType.create({
       data: {
-        keyCopyId: keyCopy2.id,
-        borrowerId: borrower1.id,
-        lentDate: new Date('2024-06-01'),
-        endDate: new Date('2024-06-10'),
-        notes: 'Urgent access required',
-        idChecked: true,
-        returnedDate: null,
+        label: keyType.label,
+        function: keyType.function,
+        accessArea: keyType.accessArea,
+        userId: userId,
+      },
+    });
+    createdKeyTypes.push({ ...created, expectedCopies: keyType.copies });
+  }
+
+  console.log('📋 Creating key copies...');
+  // Create key copies for each type
+  const allKeyCopies = [];
+  for (const keyType of createdKeyTypes) {
+    for (let i = 1; i <= keyType.expectedCopies; i++) {
+      // Randomize status with realistic distribution
+      let status: KeyStatus;
+      const rand = Math.random();
+      if (rand < 0.05) {
+        // 5% lost
+        status = KeyStatus.LOST;
+      } else if (rand < 0.8) {
+        // 75% out (in use)
+        status = KeyStatus.OUT;
+      } else {
+        // 20% available
+        status = KeyStatus.AVAILABLE;
+      }
+
+      const keyCopy = await prisma.keyCopy.create({
+        data: {
+          keyTypeId: keyType.id,
+          copyNumber: i,
+          status: status,
+        },
+      });
+      allKeyCopies.push({ ...keyCopy, keyTypeLabel: keyType.label });
+    }
+  }
+
+  console.log('👥 Creating borrowers and lending records...');
+  // Create borrowers and lending records based on business logic
+  const shuffledNames = shuffleArray(SWEDISH_NAMES);
+  let nameIndex = 0;
+
+  // Get keys that are OUT (need borrowers)
+  const outKeys = allKeyCopies.filter((key) => key.status === KeyStatus.OUT);
+
+  // Group keys by type for business logic
+  const gKeys = outKeys.filter((key) => key.keyTypeLabel === 'G');
+  const mKeys = outKeys.filter((key) => key.keyTypeLabel === 'M');
+  const nKeys = outKeys.filter((key) => key.keyTypeLabel === 'N');
+  const otherKeys = outKeys.filter((key) => !['G', 'M', 'N'].includes(key.keyTypeLabel));
+
+  // Business logic: Most people with G key also have M or N key
+  const gKeyHolders = [];
+  for (const gKey of gKeys) {
+    if (nameIndex >= shuffledNames.length) break;
+
+    const name = shuffledNames[nameIndex++];
+    const borrower = await prisma.borrower.create({
+      data: {
+        name: name,
+        email: Math.random() > 0.1 ? generateEmail(name) : null, // 90% have email
+        phone: Math.random() > 0.05 ? generateSwedishPhone() : null, // 95% have phone
+        company: Math.random() > 0.8 ? 'Bostadsrättsföreningen' : null, // 20% are company contacts
         userId: userId,
       },
     });
 
+    gKeyHolders.push(borrower);
+
+    // Create lending record for G key
     await prisma.lendingRecord.create({
       data: {
-        keyCopyId: keyCopy4.id,
-        borrowerId: borrower2.id,
-        lentDate: new Date('2024-06-05'),
-        endDate: null,
-        notes: null,
-        idChecked: false,
+        keyCopyId: gKey.id,
+        borrowerId: borrower.id,
+        lentDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000), // Random date within last year
+        endDate:
+          Math.random() > 0.7
+            ? new Date(Date.now() + Math.random() * 180 * 24 * 60 * 60 * 1000)
+            : null, // 30% have end date
+        notes: Math.random() > 0.8 ? 'Boende i föreningen' : null,
+        idChecked: Math.random() > 0.1, // 90% ID checked
         returnedDate: null,
         userId: userId,
       },
     });
   }
 
-  console.log('Seed data for keys created!');
+  // Give M or N keys to G key holders (80% chance)
+  const storageKeys = [...mKeys, ...nKeys];
+  let storageKeyIndex = 0;
+
+  for (const holder of gKeyHolders) {
+    if (Math.random() < 0.8 && storageKeyIndex < storageKeys.length) {
+      const storageKey = storageKeys[storageKeyIndex++];
+
+      await prisma.lendingRecord.create({
+        data: {
+          keyCopyId: storageKey.id,
+          borrowerId: holder.id,
+          lentDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
+          endDate:
+            Math.random() > 0.8
+              ? new Date(Date.now() + Math.random() * 180 * 24 * 60 * 60 * 1000)
+              : null,
+          notes: Math.random() > 0.7 ? 'Förrådsplats' : null,
+          idChecked: Math.random() > 0.1,
+          returnedDate: null,
+          userId: userId,
+        },
+      });
+    }
+  }
+
+  // Handle remaining storage keys and other keys
+  const remainingKeys = [...storageKeys.slice(storageKeyIndex), ...otherKeys];
+
+  for (const key of remainingKeys) {
+    if (nameIndex >= shuffledNames.length) break;
+
+    const name = shuffledNames[nameIndex++];
+    const borrower = await prisma.borrower.create({
+      data: {
+        name: name,
+        email: Math.random() > 0.15 ? generateEmail(name) : null,
+        phone: Math.random() > 0.1 ? generateSwedishPhone() : null,
+        company:
+          key.keyTypeLabel === 'E'
+            ? 'Avfallshantering AB'
+            : key.keyTypeLabel === 'C'
+              ? 'Fastighetsskötsel Service'
+              : null,
+        userId: userId,
+      },
+    });
+
+    await prisma.lendingRecord.create({
+      data: {
+        keyCopyId: key.id,
+        borrowerId: borrower.id,
+        lentDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
+        endDate:
+          key.keyTypeLabel === 'E'
+            ? new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000)
+            : Math.random() > 0.6
+              ? new Date(Date.now() + Math.random() * 180 * 24 * 60 * 60 * 1000)
+              : null,
+        notes:
+          key.keyTypeLabel === 'E'
+            ? 'Sophämtning torsdagar'
+            : key.keyTypeLabel === 'C'
+              ? 'Fastighetsskötsel'
+              : key.keyTypeLabel === 'L'
+                ? 'Tvättid bokad'
+                : null,
+        idChecked: Math.random() > 0.05,
+        returnedDate: null,
+        userId: userId,
+      },
+    });
+  }
+
+  console.log('📊 Seed data summary:');
+  const keyTypeCounts = await prisma.keyType.findMany({
+    include: {
+      keyCopies: {
+        include: {
+          lendingRecords: {
+            where: { returnedDate: null },
+          },
+        },
+      },
+    },
+  });
+
+  for (const keyType of keyTypeCounts) {
+    const total = keyType.keyCopies.length;
+    const inUse = keyType.keyCopies.filter((copy) => copy.status === KeyStatus.OUT).length;
+    const available = keyType.keyCopies.filter(
+      (copy) => copy.status === KeyStatus.AVAILABLE,
+    ).length;
+    const lost = keyType.keyCopies.filter((copy) => copy.status === KeyStatus.LOST).length;
+
+    console.log(
+      `${keyType.label}: ${total} total (${inUse} in use, ${available} available, ${lost} lost)`,
+    );
+  }
+
+  const totalBorrowers = await prisma.borrower.count();
+  const totalLendingRecords = await prisma.lendingRecord.count();
+
+  console.log(
+    `\n✅ Created ${totalBorrowers} borrowers and ${totalLendingRecords} lending records`,
+  );
+  console.log('🎉 Comprehensive seed data created successfully!');
 }
 
 main()

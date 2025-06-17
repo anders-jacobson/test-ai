@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 
 // Placeholder: In a real implementation, you would verify the Supabase session/cookie here
@@ -8,7 +9,17 @@ import { prisma } from '@/lib/prisma';
 // If yes, redirect to /dashboard
 
 export async function GET(req: NextRequest) {
-  // 1. Get Supabase session from cookie
+  const supabase = createRouteHandlerClient({ cookies });
+
+  const { searchParams } = new URL(req.url);
+  const code = searchParams.get('code');
+
+  if (code) {
+    // Exchange the code for a session
+    await supabase.auth.exchangeCodeForSession(code);
+  }
+
+  // Get the current session
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -20,7 +31,7 @@ export async function GET(req: NextRequest) {
 
   const email = session.user.email;
 
-  // 2. Query User table for user
+  // Query User table for user
   const user = await prisma.user.findUnique({
     where: { email },
   });

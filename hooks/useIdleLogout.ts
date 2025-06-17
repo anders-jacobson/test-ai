@@ -1,13 +1,14 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-const IDLE_TIMEOUT = 15 * 60 * 1000; // 1 minute for testing
+const IDLE_TIMEOUT = 15 * 60 * 1000; // 15 minutes
 
 export default function useIdleLogout() {
   const timer = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     const logout = async () => {
@@ -35,5 +36,5 @@ export default function useIdleLogout() {
       window.removeEventListener('mousedown', resetTimer);
       window.removeEventListener('touchstart', resetTimer);
     };
-  }, [router]);
+  }, [router, supabase]);
 }
