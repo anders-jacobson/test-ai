@@ -72,6 +72,9 @@ venv/
 env/
 ENV/
 
+# Next.js build output
+.next/
+
 # Temporary files
 *.tmp
 *.temp
