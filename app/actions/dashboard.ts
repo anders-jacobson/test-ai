@@ -61,7 +61,11 @@ export async function getBorrowedKeysTableData() {
     where: { userId },
     include: {
       borrower: true,
-      keyCopy: true,
+      keyCopy: {
+        include: {
+          keyType: true,
+        },
+      },
     },
   });
 
@@ -75,6 +79,8 @@ export async function getBorrowedKeysTableData() {
       email: record.borrower.email ?? '',
       phone: record.borrower.phone ?? '',
       keyId: record.keyCopyId,
+      keyLabel: record.keyCopy.keyType.label,
+      copyNumber: record.keyCopy.copyNumber,
       status,
       borrowedAt: record.lentDate?.toISOString() ?? '',
       returnedAt: record.returnedDate?.toISOString() ?? '',

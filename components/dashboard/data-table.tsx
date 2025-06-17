@@ -98,10 +98,10 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
               <DropdownMenuLabel>Filter by status</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
-                checked={table.getColumn('status')?.getFilterValue() === 'in use'}
-                onCheckedChange={() => handleStatusFilter('in use')}
+                checked={table.getColumn('status')?.getFilterValue() === 'borrowed'}
+                onCheckedChange={() => handleStatusFilter('borrowed')}
               >
-                In use
+                Borrowed
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={table.getColumn('status')?.getFilterValue() === 'returned'}

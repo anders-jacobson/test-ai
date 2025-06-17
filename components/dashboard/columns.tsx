@@ -4,6 +4,27 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { IconArrowsUpDown, IconDots } from '@tabler/icons-react';
 
+// Helper function to format date as "day month year"
+function formatDate(dateString: string): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -15,7 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 // Define the types for the data structure
-export type KeyStatus = 'available' | 'borrowed' | 'returned' | 'lost';
+export type KeyStatus = 'borrowed' | 'returned' | 'lost';
 
 export type BorrowedKey = {
   borrowerName: string; // Name of the person
@@ -23,6 +44,8 @@ export type BorrowedKey = {
   email: string; // Contact email of the borrower
   phone: string; // Optional phone number
   keyId: string; // Key ID
+  keyLabel: string; // Key label (e.g., "A", "B", etc.)
+  copyNumber: number; // Copy number
   status: KeyStatus; // Status of the key
   borrowedAt: string; // Date when the key was borrowed
   returnedAt?: string; // Date when the key was returned (optional)
@@ -46,8 +69,18 @@ export const columns: ColumnDef<BorrowedKey>[] = [
     },
   },
   {
-    accessorKey: 'keyId',
+    accessorKey: 'keyLabel',
     header: 'Key',
+    cell: ({ row }) => {
+      const keyLabel = row.original.keyLabel;
+      const copyNumber = row.original.copyNumber;
+      return (
+        <div>
+          {keyLabel}
+          {copyNumber}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'status',
@@ -61,7 +94,7 @@ export const columns: ColumnDef<BorrowedKey>[] = [
       const status = row.original.status;
       const date = status === 'returned' ? row.original.returnedAt : row.original.borrowedAt;
 
-      return <div>{date}</div>;
+      return <div>{formatDate(date || '')}</div>;
     },
   },
   {
