@@ -1,23 +1,31 @@
 'use client';
 import React from 'react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
 
-// Mock data: one bar per key type, stacked by status
-
-const statusBars = [
-  { key: 'Available', color: 'var(--chart-1)', name: 'Available' },
-  { key: 'InUse', color: 'var(--chart-2)', name: 'In Use' },
-  { key: 'Lost', color: 'var(--chart-3)', name: 'Lost' },
-];
+const chartConfig = {
+  Available: {
+    label: 'Available',
+    color: 'var(--chart-1)',
+  },
+  InUse: {
+    label: 'In Use',
+    color: 'var(--chart-2)',
+  },
+  Lost: {
+    label: 'Lost',
+    color: 'var(--chart-3)',
+  },
+} satisfies ChartConfig;
 
 export default function KeyChart({
   data,
@@ -25,17 +33,28 @@ export default function KeyChart({
   data: { keyType: string; Available: number; InUse: number; Lost: number }[];
 }) {
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={data} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="keyType" />
-        <YAxis allowDecimals={false} />
-        <Tooltip />
-        <Legend />
-        {statusBars.map((bar) => (
-          <Bar key={bar.key} dataKey={bar.key} stackId="a" fill={bar.color} name={bar.name} />
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
+    <Card>
+      <CardHeader>
+        <CardTitle>Key status</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[300px]">
+          <BarChart accessibilityLayer data={data}>
+            <CartesianGrid vertical={false} />
+            <XAxis dataKey="keyType" tickLine={false} tickMargin={10} axisLine={false} />
+            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar
+              dataKey="Available"
+              stackId="a"
+              fill="var(--color-Available)"
+              radius={[0, 0, 4, 4]}
+            />
+            <Bar dataKey="InUse" stackId="a" fill="var(--color-InUse)" radius={[0, 0, 0, 0]} />
+            <Bar dataKey="Lost" stackId="a" fill="var(--color-Lost)" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
