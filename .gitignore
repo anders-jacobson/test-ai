@@ -1,3 +1,50 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Testing
+coverage/
+.nyc_output
+
+# Next.js
+.next/
+out/
+
+# Production
+build/
+dist/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -7,30 +54,9 @@
 ehthumbs.db
 Thumbs.db
 
-# Editor and IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Cursor AI configuration (contains sensitive project IDs)
-.cursor/mcp.json
-.cursor/rules/environment-config.mdc
-
 # Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Runtime data
 pids
@@ -38,53 +64,60 @@ pids
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
-coverage/
-
 # Dependency directories
-node_modules/
 bower_components/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# Optional npm cache directory
+.npm
 
-# Virtual environments
-venv/
-env/
-ENV/
+# Optional eslint cache
+.eslintcache
 
-# Next.js build output
-.next/
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
 
-# Temporary files
-*.tmp
-*.temp
-.cache/
+# Optional REPL history
+.node_repl_history
 
-# Backup files
-*.bak
-*.backup 
-/lib/generated/prisma
+# Output of 'npm pack'
+*.tgz
 
-/lib/generated/prisma
+# Yarn Integrity file
+.yarn-integrity
 
-/generated/prisma
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Storybook build outputs
+.out
+.storybook-out
+storybook-static
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Turbo
+.turbo
+
+# Prisma generated files
+lib/generated/prisma
+generated/prisma
+
+# Cursor AI configuration (contains sensitive project IDs)
+.cursor/mcp.json
+.cursor/rules/environment-config.mdc
