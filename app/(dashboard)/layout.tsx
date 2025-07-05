@@ -1,5 +1,5 @@
 import React from 'react';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { DashboardSidebar } from '@/components/dashboard/dashboard-sidebar';
 import { SiteHeader } from '@/components/dashboard/site-header';

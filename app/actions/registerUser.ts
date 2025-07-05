@@ -1,6 +1,6 @@
 'use server';
 import { prisma } from '@/lib/prisma';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import bcrypt from 'bcrypt';
 
 export async function registerUser(formData: FormData) {
@@ -20,11 +20,15 @@ export async function registerUser(formData: FormData) {
     // Hash the password
     await bcrypt.hash(password, 10); // Not used, but kept for future extensibility
 
+    // Create server client for authentication
+    const supabase = await createClient();
+
     // Register user with Supabase Auth
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
+
     if (error) {
       // If Supabase returns a user exists error, show a friendly message
       if (error.message && error.message.toLowerCase().includes('user already registered')) {
@@ -33,11 +37,18 @@ export async function registerUser(formData: FormData) {
       return { error: error.message };
     }
 
-    // Create user in the database
+    // Get the auth user ID for our database record
+    const authUserId = data.user?.id;
+    if (!authUserId) {
+      return { error: 'Failed to get user ID from Supabase.' };
+    }
+
+    // Create user in the database with auth_id
     await prisma.user.create({
       data: {
         email,
         cooperative,
+        auth_id: authUserId,
       },
     });
 

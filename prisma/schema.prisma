@@ -14,20 +14,21 @@ model User {
   name           String?
   cooperative    String
   createdAt      DateTime        @default(now())
+  auth_id        String?         @db.Uuid
   borrowers      Borrower[]
   keyTypes       KeyType[]
   lendingRecords LendingRecord[]
 }
 
 model KeyType {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  label       String    @db.VarChar(2)
-  function    String    @db.VarChar(100)
-  accessArea  String?
-  userId      String    @db.Uuid
-  createdAt   DateTime  @default(now())
-  keyCopies   KeyCopy[]
-  user        User      @relation(fields: [userId], references: [id])
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  label      String    @db.VarChar(2)
+  function   String    @db.VarChar(100)
+  accessArea String?
+  createdAt  DateTime  @default(now())
+  userId     String    @db.Uuid
+  keyCopies  KeyCopy[]
+  user       User      @relation(fields: [userId], references: [id])
 }
 
 model KeyCopy {
@@ -48,8 +49,8 @@ model Borrower {
   email          String?         @db.VarChar(255)
   phone          String?         @db.VarChar(20)
   company        String?         @db.VarChar(100)
-  userId         String          @db.Uuid
   createdAt      DateTime        @default(now())
+  userId         String          @db.Uuid
   user           User            @relation(fields: [userId], references: [id])
   lendingRecords LendingRecord[]
 }
@@ -63,11 +64,11 @@ model LendingRecord {
   notes        String?
   idChecked    Boolean   @default(false)
   returnedDate DateTime?
-  userId       String    @db.Uuid
   createdAt    DateTime  @default(now())
+  userId       String    @db.Uuid
   borrower     Borrower  @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
-  user         User      @relation(fields: [userId], references: [id])
   keyCopy      KeyCopy   @relation(fields: [keyCopyId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id])
 }
 
 enum KeyStatus {

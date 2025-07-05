@@ -3,9 +3,11 @@ description:
 globs:
 alwaysApply: false
 ---
+
 # Technology Stack
 
 ## Frontend Stack
+
 - **Next.js 15** with TypeScript (strict mode) and App Router
 - **React 19** (included with Next.js)
 - **Tailwind CSS v4** with `@theme` directive configuration
@@ -15,12 +17,14 @@ alwaysApply: false
 - **TanStack Table** for data tables
 
 ## Backend & Database
+
 - **Supabase** (PostgreSQL + Auth + Real-time)
 - **Prisma** as ORM for type-safe database operations
 - **Row Level Security (RLS)** for data isolation
 - **EU servers** for GDPR compliance
 
 ## Key Dependencies
+
 ```json
 {
   "dependencies": {
@@ -54,6 +58,7 @@ alwaysApply: false
 ```
 
 ## Architecture Patterns
+
 - **Next.js 15 App Router** with server components by default
 - **Client components** for interactive features only
 - **Custom hooks** for Supabase + Prisma operations
@@ -65,6 +70,7 @@ alwaysApply: false
 ## Mandatory UI Component Usage
 
 ### ALWAYS Use shadcn/ui Components:
+
 - `Button` from `@/components/ui/button` - NEVER use plain `<button>`
 - `Input` from `@/components/ui/input` - NEVER use plain `<input>`
 - `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell` from `@/components/ui/table`
@@ -79,6 +85,7 @@ alwaysApply: false
 - `Tooltip` family from `@/components/ui/tooltip`
 
 ### ALWAYS Use Tabler Icons:
+
 ```typescript
 // Correct icon usage
 import { IconPlus, IconTrash, IconEdit, IconFilter } from '@tabler/icons-react';
@@ -94,8 +101,9 @@ import { IconPlus, IconTrash, IconEdit, IconFilter } from '@tabler/icons-react';
 ## Tailwind CSS v4 Configuration
 
 ### CSS-Based Configuration (app/globals.css):
+
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --radius: 0.65rem;
@@ -106,6 +114,7 @@ import { IconPlus, IconTrash, IconEdit, IconFilter } from '@tabler/icons-react';
 ```
 
 ### JavaScript Config (tailwind.config.js):
+
 ```javascript
 // Only plugins in JS config for v4
 import forms from '@tailwindcss/forms';
@@ -119,6 +128,7 @@ export default config;
 ```
 
 ## File Structure (Next.js 15 App Router)
+
 ```
 ├── app/                    # App Router directory
 │   ├── globals.css        # Global styles + Tailwind v4 @theme
@@ -133,13 +143,33 @@ export default config;
 │   ├── ui/              # shadcn/ui components (mandatory)
 │   ├── dashboard/       # Feature-specific components
 │   └── root/            # Root layout components
-├── lib/                 # Utility functions
+├── lib/                 # Core utilities & infrastructure
+│   ├── utils.ts         # Tailwind class merging (cn function)
+│   ├── prisma.ts        # Database client singleton
+│   └── supabase/        # Supabase client factories
+│       ├── client.ts    # Browser client factory
+│       ├── server.ts    # Server client factory
+│       └── middleware.ts # Middleware client factory
 ├── hooks/               # Custom hooks
 ├── prisma/              # Prisma schema and migrations
 └── middleware.ts        # Next.js middleware for auth
 ```
 
+## Import Patterns
+
+```typescript
+// Core utilities
+import { cn } from '@/lib/utils';
+import { prisma } from '@/lib/prisma';
+
+// Supabase clients (use appropriate one for environment)
+import { createClient } from '@/lib/supabase/client'; // Client components
+import { createClient } from '@/lib/supabase/server'; // Server components/actions
+import { updateSession } from '@/lib/supabase/middleware'; // Middleware only
+```
+
 ## Next.js 15 Specific Features
+
 - **Server Components** by default for better performance
 - **Streaming** for improved loading states
 - **Server Actions** for form submissions and mutations

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 export default function NavbarRoot() {

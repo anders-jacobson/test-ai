@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔑 Key Management Application
 
-## Getting Started
+A secure, mobile-first web application for tracking physical keys in Swedish housing cooperatives (bostadsrättsföreningar).
 
-First, run the development server:
+## 🎯 **Quick Start**
+
+### **Development**
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### **First Time Setup**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Read documentation**: [`docs/`](./docs/) - Complete project documentation
+2. **Security first**: [`docs/security/`](./docs/security/) - Security setup and testing
+3. **Current tasks**: [`docs/development/tasks.md`](./docs/development/tasks.md) - What to work on
 
-## Learn More
+## 📖 **Documentation**
 
-To learn more about Next.js, take a look at the following resources:
+All project documentation is organized in [`docs/`](./docs/):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **[📖 Documentation Index](./docs/)** - Navigation to all documentation
+- **[🔐 Security](./docs/security/)** - Authentication, RLS policies, testing procedures
+- **[🛠️ Development](./docs/development/)** - Tasks, architecture, technical implementation
+- **[📋 Product](./docs/product/)** - Requirements, user stories, product specifications
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 **Project Status**
 
-## Deploy on Vercel
+### **✅ Completed**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Foundation**: Next.js 15, Supabase, Prisma, shadcn/ui
+- **Security**: 18 RLS policies, server-side authentication
+- **Dashboard**: Charts, tables, responsive layout
+- **Authentication**: Email/password + Google OAuth
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### **🔄 In Progress**
+
+- **Key Management**: CRUD operations for key types
+- **Testing**: Complete authentication workflow testing
+
+### **⏳ Next Up**
+
+- **Borrower System**: Contact management
+- **Lending Workflow**: Key lending and return process
+
+## 🛡️ **Security**
+
+This application implements comprehensive security:
+
+- **Row Level Security**: 18 policies across all database tables
+- **EU Data Storage**: GDPR compliant hosting in Stockholm
+- **Cooperative Isolation**: Complete data separation between organizations
+- **Server-Side Authentication**: All operations use secure server clients
+
+**Security Status**: See [`docs/security/security-overview.md`](./docs/security/security-overview.md)
+
+## 🏗️ **Technology Stack**
+
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Supabase (Auth + Database), Prisma ORM
+- **Security**: Row Level Security, Server Actions
+- **UI**: Mobile-first responsive design
+- **Icons**: Tabler Icons exclusively
+
+## 📱 **User Experience**
+
+Designed for key managers in housing cooperatives:
+
+- **Mobile-first**: Touch-friendly interface for daily use
+- **Senior-friendly**: Large fonts, high contrast, simple navigation
+- **Secure**: Complete data isolation between cooperatives
+- **Efficient**: Quick key status lookup and lending workflows
+
+## 🔧 **Development**
+
+### **Standards**
+
+- **Components**: shadcn/ui only (no plain HTML elements)
+- **Icons**: Tabler Icons exclusively
+- **Authentication**: Server clients for all operations
+- **Database**: Prisma ORM with RLS policies
+
+### **Current Tasks**
+
+Check [`docs/development/tasks.md`](./docs/development/tasks.md) for detailed task breakdown and priorities.
+
+### **Contributing**
+
+1. Review [Development Documentation](./docs/development/)
+2. Check current tasks and priorities
+3. Follow cursor rules in `.cursor/rules/`
+4. Test security implications
+5. Update documentation
+
+## 📞 **Support**
+
+- **Documentation**: [`docs/`](./docs/) for comprehensive guides
+- **Security**: [`docs/security/`](./docs/security/) for security procedures
+- **Development**: [`docs/development/`](./docs/development/) for technical details
+- **Product**: [`docs/product/`](./docs/product/) for requirements and specifications
+
+---
+
+**Built with**: Next.js 15 • Supabase • Prisma • shadcn/ui • TypeScript  
+**Security**: EU hosted • RLS policies • GDPR compliant

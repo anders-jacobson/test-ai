@@ -1,6 +1,6 @@
 'use server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 // Server-side: Get the current user's User.id from Supabase Auth session (for Server Actions)
 async function getCurrentUserId() {

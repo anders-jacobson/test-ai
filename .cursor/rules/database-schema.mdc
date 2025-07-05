@@ -1,18 +1,21 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # 🗄️ Database Schema & Access Patterns
 
 ## 🚨 CRITICAL DATABASE ACCESS RULES
 
 ### ❌ NEVER MIX DATABASE ACCESS PATTERNS
+
 - **NEVER use `supabase.from('TableName')` for application data**
 - **ALWAYS use Prisma for all database queries**
 - Supabase client is ONLY for authentication, not data queries
 
 ### ✅ ALWAYS Use Prisma for Data Operations
+
 ```typescript
 // ✅ CORRECT - Use Prisma for all data operations
 import { prisma } from '@/lib/prisma';
@@ -27,17 +30,21 @@ const { data } = await supabase.from('User')...
 ```
 
 ### 🔍 User Lookup Pattern (STANDARD)
+
 **Always lookup users by email, never by Auth ID:**
+
 ```typescript
 // ✅ CORRECT - Standard user lookup pattern
 async function getCurrentUserId() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user?.email) throw new Error('Not authenticated');
-  
+
   const userRecord = await prisma.user.findUnique({
     where: { email: user.email },
-    select: { id: true }
+    select: { id: true },
   });
   if (!userRecord) throw new Error('User not found');
   return userRecord.id;
@@ -129,19 +136,22 @@ enum KeyStatus {
 ## 🏗️ Standard Prisma Patterns
 
 ### Server Actions Pattern
+
 ```typescript
 'use server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 async function getCurrentUserId() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user?.email) throw new Error('Not authenticated');
-  
+
   const userRecord = await prisma.user.findUnique({
     where: { email: user.email },
-    select: { id: true }
+    select: { id: true },
   });
   if (!userRecord) throw new Error('User not found');
   return userRecord.id;
@@ -149,19 +159,19 @@ async function getCurrentUserId() {
 
 export async function getKeyStatusSummary() {
   const userId = await getCurrentUserId();
-  
+
   const keyTypes = await prisma.keyType.findMany({
     where: { userId },
     select: {
       id: true,
       label: true,
-      keyCopies: { select: { status: true } }
-    }
+      keyCopies: { select: { status: true } },
+    },
   });
-  
-  return keyTypes.map(kt => {
+
+  return keyTypes.map((kt) => {
     const counts = { Available: 0, InUse: 0, Lost: 0 };
-    kt.keyCopies.forEach(copy => {
+    kt.keyCopies.forEach((copy) => {
       if (copy.status === 'AVAILABLE') counts.Available++;
       else if (copy.status === 'OUT') counts.InUse++;
       else if (copy.status === 'LOST') counts.Lost++;
@@ -172,8 +182,9 @@ export async function getKeyStatusSummary() {
 ```
 
 ### Layout Component Pattern (Server Component)
+
 ```typescript
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 
 async function Layout({ children }: { children: React.ReactNode }) {
@@ -212,6 +223,7 @@ async function Layout({ children }: { children: React.ReactNode }) {
 ```
 
 ## 🔧 Prisma Client Setup (lib/prisma.ts)
+
 ```typescript
 import { PrismaClient } from '@prisma/client';
 
@@ -227,6 +239,7 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 ## 🚨 Common Mistakes to Avoid
 
 ### 1. Mixing Database Access Patterns
+
 ```typescript
 // ❌ WRONG - Don't mix Supabase queries with Prisma
 const { data: profile } = await supabase.from('User')...
@@ -238,24 +251,26 @@ const keyTypes = await prisma.keyType.findMany()...
 ```
 
 ### 2. Wrong User Lookup Method
+
 ```typescript
 // ❌ WRONG - Don't lookup by Auth ID
 const profile = await prisma.user.findUnique({
-  where: { id: authUser.id }  // Auth ID ≠ Database ID
+  where: { id: authUser.id }, // Auth ID ≠ Database ID
 });
 
 // ✅ CORRECT - Always lookup by email
 const profile = await prisma.user.findUnique({
-  where: { email: authUser.email! }
+  where: { email: authUser.email! },
 });
 ```
 
 ### 3. Inconsistent Error Handling
+
 ```typescript
 // ✅ CORRECT - Always handle Prisma errors properly
 try {
   const user = await prisma.user.findUnique({
-    where: { email: authUser.email! }
+    where: { email: authUser.email! },
   });
   if (!user) {
     console.log('User not found - may need profile completion');
@@ -274,38 +289,39 @@ Generate types with: `npx prisma generate`
 
 ```typescript
 export type User = {
-  id: string
-  email: string
-  name: string | null
-  cooperative: string
-  createdAt: Date
-}
+  id: string;
+  email: string;
+  name: string | null;
+  cooperative: string;
+  createdAt: Date;
+};
 
 export type KeyType = {
-  id: string
-  label: string
-  function: string
-  accessArea: string | null
-  userId: string
-  createdAt: Date
-}
+  id: string;
+  label: string;
+  function: string;
+  accessArea: string | null;
+  userId: string;
+  createdAt: Date;
+};
 
 export type KeyCopy = {
-  id: string
-  keyTypeId: string
-  copyNumber: number
-  status: KeyStatus
-  createdAt: Date
-}
+  id: string;
+  keyTypeId: string;
+  copyNumber: number;
+  status: KeyStatus;
+  createdAt: Date;
+};
 
 export enum KeyStatus {
   AVAILABLE = 'AVAILABLE',
   OUT = 'OUT',
-  LOST = 'LOST'
+  LOST = 'LOST',
 }
 ```
 
 ## 🔄 Database Migration Commands
+
 ```bash
 # Generate Prisma client after schema changes
 npx prisma generate

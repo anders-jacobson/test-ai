@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { updateUser } from '@/app/actions/updateProfile';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 export default function CompleteProfilePage() {
   const [cooperative, setCooperative] = useState('');

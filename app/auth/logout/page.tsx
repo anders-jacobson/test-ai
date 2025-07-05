@@ -1,10 +1,11 @@
 'use client';
 import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/client';
 
 export default function LogoutPage() {
   useEffect(() => {
     async function signOut() {
+      const supabase = createClient();
       await supabase.auth.signOut();
       window.location.href = '/auth/login';
     }
